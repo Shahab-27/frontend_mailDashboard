@@ -3,55 +3,97 @@
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, #4e54c8, #8f94fb);
-  font-family: 'Arial', sans-serif;
+  background: linear-gradient(135deg, #1e293b, #4e54c8);
+  font-family: 'Poppins', sans-serif;
+  color: #fff;
+  overflow: hidden;
+  position: relative;
+}
+
+.auth::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.1), transparent 70%);
+  animation: rotateBackground 10s linear infinite;
+  z-index: 0;
+}
+
+@keyframes rotateBackground {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .card {
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  padding: 2rem;
-  max-width: 400px;
+  position: relative;
+  z-index: 1;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  padding: 2.5rem;
+  max-width: 420px;
   width: 100%;
   text-align: center;
+  color: #fff;
 }
 
 .brand {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 .logo {
-  width: 50px;
-  height: 50px;
-  margin-right: 0.5rem;
+  width: 60px;
+  height: 60px;
+  margin-right: 0.8rem;
+  animation: floatLogo 3s ease-in-out infinite;
+}
+
+@keyframes floatLogo {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
 }
 
 h1 {
-  font-size: 1.8rem;
-  color: #333;
+  font-size: 2rem;
+  font-weight: 700;
   margin: 0;
 }
 
 h2 {
-  font-size: 1.5rem;
-  color: #555;
-  margin-bottom: 0.5rem;
+  font-size: 1.4rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
 }
 
 .subtitle {
-  font-size: 0.9rem;
-  color: #777;
-  margin-bottom: 1.5rem;
+  font-size: 1rem;
+  color: #d1d5db;
+  margin-bottom: 2rem;
 }
 
 .form {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.2rem;
 }
 
 .field {
@@ -62,36 +104,45 @@ h2 {
 
 .field span {
   font-size: 0.9rem;
-  color: #555;
-  margin-bottom: 0.3rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
 }
 
 input {
-  padding: 0.8rem;
-  border: 1px solid #ddd;
+  padding: 0.9rem;
+  border: none;
   border-radius: 8px;
-  font-size: 0.9rem;
-  transition: border-color 0.3s;
+  font-size: 1rem;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  transition: background 0.3s, box-shadow 0.3s;
+}
+
+input::placeholder {
+  color: #d1d5db;
 }
 
 input:focus {
-  border-color: #4e54c8;
+  background: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 8px rgba(78, 84, 200, 0.8);
   outline: none;
 }
 
 .submit {
-  background: #4e54c8;
+  background: linear-gradient(135deg, #4e54c8, #8f94fb);
   color: #fff;
   border: none;
   border-radius: 8px;
-  padding: 0.8rem;
-  font-size: 1rem;
+  padding: 0.9rem;
+  font-size: 1.1rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: transform 0.2s, box-shadow 0.3s;
 }
 
 .submit:hover {
-  background: #3b3fc4;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(78, 84, 200, 0.6);
 }
 
 .submit:disabled {
@@ -100,20 +151,23 @@ input:focus {
 }
 
 .error {
-  color: #e74c3c;
+  color: #f87171;
   font-size: 0.9rem;
+  margin-top: -0.5rem;
 }
 
 .footer {
-  margin-top: 1.5rem;
+  margin-top: 2rem;
 }
 
 .link {
-  color: #4e54c8;
+  color: #8f94fb;
   text-decoration: none;
-  font-weight: bold;
+  font-weight: 600;
+  transition: color 0.3s;
 }
 
 .link:hover {
+  color: #fff;
   text-decoration: underline;
 }
