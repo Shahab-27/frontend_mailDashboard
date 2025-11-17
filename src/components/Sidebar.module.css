@@ -1,0 +1,123 @@
+.sidebar {
+  width: 260px;
+  background: #fbfcff;
+  border-right: 1px solid rgba(15, 23, 42, 0.06);
+  padding: 2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  box-shadow: inset -1px 0 0 rgba(15, 23, 42, 0.04);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.brand {
+  font-weight: 600;
+  font-size: 1.2rem;
+}
+
+.userName {
+  margin: 0;
+  font-weight: 500;
+}
+
+.userEmail {
+  margin: 0;
+  font-size: 0.9rem;
+  color: rgba(15, 23, 42, 0.6);
+}
+
+.composeBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #2563eb, #7c3aed);
+  color: white;
+  padding: 0.85rem 1rem;
+  border-radius: 14px;
+  font-weight: 500;
+  box-shadow: 0 10px 25px rgba(37, 99, 235, 0.25);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.composeBtn svg {
+  width: 20px;
+}
+
+.composeBtn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 30px rgba(37, 99, 235, 0.3);
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.8rem 1rem;
+  border-radius: 12px;
+  color: rgba(15, 23, 42, 0.7);
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.navItem svg {
+  width: 20px;
+  color: rgba(37, 99, 235, 0.8);
+}
+
+.navItem:hover {
+  background: rgba(37, 99, 235, 0.08);
+  color: #0f172a;
+}
+
+.active {
+  background: rgba(37, 99, 235, 0.15);
+  color: #0f172a;
+  font-weight: 600;
+}
+
+.badge {
+  margin-left: auto;
+  font-size: 0.7rem;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.08);
+  color: rgba(15, 23, 42, 0.7);
+}
+
+@media (max-width: 960px) {
+  .sidebar {
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1rem;
+    border-right: none;
+    border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+  }
+
+  .header {
+    width: 100%;
+  }
+
+  .nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+
+  .navItem {
+    flex: 1;
+    justify-content: center;
+  }
+}
+
