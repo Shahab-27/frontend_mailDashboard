@@ -3,6 +3,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import useMailStore from './store/mailStore';
+ 
 
 const App = () => {
   const token = useMailStore((state) => state.token);
