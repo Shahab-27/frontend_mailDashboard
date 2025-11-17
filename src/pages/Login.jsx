@@ -28,22 +28,34 @@ const Login = () => {
   return (
     <section className={styles.auth}>
       <div className={styles.card}>
-        <h1>Welcome back</h1>
-        <p>Access your Modern Mail dashboard</p>
+        <div className={styles.brand}>
+          <img src="/logo.png" alt="Modern Mail Logo" className={styles.logo} />
+          <h1>Modern Mail</h1>
+        </div>
+        <h2>Welcome Back!</h2>
+        <p className={styles.subtitle}>Access your Modern Mail dashboard with ease.</p>
 
         <form className={styles.form} onSubmit={handleSubmit}>
           <label className={styles.field}>
-            Email
-            <input type="email" name="email" value={form.email} onChange={handleChange} required />
+            <span>Email Address</span>
+            <input
+              type="email"
+              name="email"
+              value={form.email}
+              onChange={handleChange}
+              placeholder="Enter your email"
+              required
+            />
           </label>
 
           <label className={styles.field}>
-            Password
+            <span>Password</span>
             <input
               type="password"
               name="password"
               value={form.password}
               onChange={handleChange}
+              placeholder="Enter your password"
               required
             />
           </label>
@@ -51,13 +63,18 @@ const Login = () => {
           {status.error && <p className={styles.error}>{status.error}</p>}
 
           <button className={styles.submit} type="submit" disabled={status.loading}>
-            {status.loading ? 'Signing in…' : 'Sign in'}
+            {status.loading ? 'Signing in…' : 'Sign In'}
           </button>
         </form>
 
-        <p className={styles.switch}>
-          No account? <Link to="/register">Create one</Link>
-        </p>
+        <div className={styles.footer}>
+          <p>
+            No account? <Link to="/register" className={styles.link}>Create one</Link>
+          </p>
+          <p>
+            <Link to="/forgot-password" className={styles.link}>Forgot Password?</Link>
+          </p>
+        </div>
       </div>
     </section>
   );
