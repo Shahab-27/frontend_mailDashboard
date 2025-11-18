@@ -29,11 +29,12 @@ const Login = () => {
     <section className={styles.auth}>
       <div className={styles.card}>
         <div className={styles.brand}>
-          <img src="/logo.png" alt="Modern Mail Logo" className={styles.logo} />
-          <h1>Modern Mail</h1>
+          <div className={styles.brandMark}>MM</div>
+          <div>
+            <h1 className={styles.title}>Modern Mail</h1>
+            <p className={styles.subtitle}>Sign in to your minimal workspace.</p>
+          </div>
         </div>
-        <h2>Welcome Back!</h2>
-        <p className={styles.subtitle}>Access your Modern Mail dashboard with ease.</p>
 
         <form className={styles.form} onSubmit={handleSubmit}>
           <label className={styles.field}>
