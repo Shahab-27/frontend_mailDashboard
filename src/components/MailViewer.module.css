@@ -1,0 +1,173 @@
+.viewer {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.92);
+  border-left: 1px solid rgba(15, 23, 42, 0.04);
+  padding: 1.8rem 2.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  backdrop-filter: blur(10px);
+  height: 100%;
+  overflow-y: auto;
+}
+
+.viewerEmpty {
+  width: 100%;
+  display: grid;
+  place-items: center;
+  color: rgba(15, 23, 42, 0.6);
+  background: rgba(255, 255, 255, 0.6);
+  border-left: 1px solid rgba(15, 23, 42, 0.04);
+  height: 100%;
+}
+
+.header {
+  display: flex;
+  gap: 1.5rem;
+  align-items: stretch;
+  flex-wrap: wrap;
+}
+
+.label {
+  margin: 0;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  color: rgba(15, 23, 42, 0.5);
+  letter-spacing: 0.08em;
+}
+
+.parties {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 1rem;
+  flex: 1;
+}
+
+.partyCard {
+  display: flex;
+  gap: 0.85rem;
+  align-items: flex-start;
+  padding: 0.95rem 1.1rem;
+  border-radius: 22px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  background: rgba(15, 23, 42, 0.02);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+}
+
+.avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  background: rgba(34, 197, 94, 0.15);
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  color: #15803d;
+  letter-spacing: 0.05em;
+}
+
+.partyDetails {
+  flex: 1;
+  min-width: 0;
+}
+
+.address {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #0f172a;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  line-height: 1.35;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.actions:only-child {
+  margin-left: auto;
+}
+
+.actionButton {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.65rem 1.2rem;
+  border-radius: 16px;
+  background: rgba(34, 197, 94, 0.15);
+  color: #0f172a;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.actionButton svg {
+  width: 18px;
+}
+
+.actionButton:hover {
+  background: rgba(34, 197, 94, 0.25);
+  transform: translateY(-1px);
+}
+
+.danger {
+  background: rgba(248, 113, 113, 0.2);
+  color: #b91c1c;
+}
+
+.danger:hover {
+  background: rgba(248, 113, 113, 0.3);
+  color: #991b1b;
+}
+
+.body h2 {
+  margin: 0;
+  font-size: clamp(1.35rem, 2.5vw, 1.8rem);
+  color: #0f172a;
+}
+
+.mailMeta {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.5rem;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+}
+
+.timestamp {
+  margin: 0.3rem 0 1rem;
+  color: rgba(15, 23, 42, 0.6);
+  font-size: 0.9rem;
+}
+
+.contentCard {
+  margin-top: 1rem;
+  padding: 1.4rem;
+  border-radius: 24px;
+  background: rgba(15, 23, 42, 0.02);
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+}
+
+.content {
+  white-space: pre-wrap;
+  line-height: 1.65;
+  color: rgba(15, 23, 42, 0.85);
+  margin: 0;
+}
+
+@media (max-width: 960px) {
+  .viewer {
+    border-left: none;
+    box-shadow: none;
+  }
+
+  .actions {
+    justify-content: flex-start;
+  }
+}
+
