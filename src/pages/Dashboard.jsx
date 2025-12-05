@@ -41,6 +41,9 @@ const Dashboard = () => {
   }, [mails, query]);
 
   const handleFolderChange = async (nextFolder) => {
+    if (nextFolder === 'all') {
+      nextFolder = 'inbox';
+    }
     setFolder(nextFolder);
     await fetchMails(nextFolder).catch(() => {});
   };

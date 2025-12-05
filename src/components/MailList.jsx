@@ -4,7 +4,10 @@ import styles from './MailList.module.css';
 const folderLabels = {
   inbox: 'Inbox',
   sent: 'Sent',
+  drafts: 'Drafts',
   trash: 'Trash',
+  spam: 'Spam',
+  starred: 'Starred',
 };
 
 const MailList = ({ mails, loading, selectedId, onSelect, folder, onEmptyTrash }) => (

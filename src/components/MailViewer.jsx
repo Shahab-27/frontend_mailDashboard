@@ -1,83 +1,121 @@
-import { ArrowUturnLeftIcon, TrashIcon, PencilSquareIcon } from '@heroicons/react/24/outline';
+import { ArrowUturnLeftIcon, TrashIcon, PencilSquareIcon, PaperClipIcon, LinkIcon, PhotoIcon, PaperAirplaneIcon, EllipsisHorizontalIcon } from '@heroicons/react/24/outline';
+import { useState } from 'react';
+import useMailStore from '../store/mailStore';
 import styles from './MailViewer.module.css';
 
 const MailViewer = ({ mail, onDelete, onRestore, folder, onEditDraft }) => {
+  const [replyText, setReplyText] = useState('');
+  const { sendMail } = useMailStore();
+
   if (!mail) {
     return <section className={styles.viewerEmpty}>Select a mail to preview</section>;
   }
 
-  const getInitial = (value) => (value?.trim()[0]?.toUpperCase() ?? '?');
+  const formatDate = (date) => {
+    try {
+      const d = new Date(date);
+      const today = new Date();
+      const isToday = d.toDateString() === today.toDateString();
+      
+      if (isToday) {
+        return `${d.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })} Today, ${d.toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' })}`;
+      }
+      return d.toLocaleString(undefined, {
+        hour: '2-digit',
+        minute: '2-digit',
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+      });
+    } catch {
+      return '';
+    }
+  };
+
+  const handleSendReply = async (e) => {
+    e.preventDefault();
+    if (!replyText.trim()) return;
+    
+    try {
+      await sendMail({
+        to: folder === 'sent' ? mail.to : mail.from,
+        subject: `Re: ${mail.subject}`,
+        body: replyText,
+      });
+      setReplyText('');
+    } catch (error) {
+      console.error('Failed to send reply:', error);
+    }
+  };
 
   return (
     <section className={styles.viewer}>
-      <header className={styles.header}>
-        <div className={styles.parties}>
-          {folder !== 'sent' && (
-            <div className={styles.partyCard}>
-              <div className={styles.avatar}>{getInitial(mail.from)}</div>
-              <div className={styles.partyDetails}>
-                <p className={styles.label}>From</p>
-                <p className={styles.address} title={mail.from}>
-                  {mail.from}
-                </p>
-              </div>
+      <div className={styles.emailContent}>
+        <div className={styles.emailHeader}>
+          <div className={styles.emailInfo}>
+            <div className={styles.emailAddresses}>
+              <span className={styles.emailFrom}>{folder === 'sent' ? mail.to : mail.from}</span>
+              {folder === 'sent' && <span className={styles.emailTo}>{mail.from}</span>}
             </div>
-          )}
-          <div className={styles.partyCard}>
-            <div className={styles.avatar}>{getInitial(mail.to)}</div>
-            <div className={styles.partyDetails}>
-              <p className={styles.label}>To</p>
-              <p className={styles.address} title={mail.to}>
-                {mail.to}
-              </p>
-            </div>
+            <div className={styles.emailDate}>{formatDate(mail.createdAt)}</div>
           </div>
+          <h1 className={styles.emailSubject}>{mail.subject || '(No subject)'}</h1>
         </div>
-        <div className={styles.actions}>
-          {folder === 'trash' ? (
-            <button className={styles.actionButton} onClick={() => onRestore(mail._id)}>
-              <ArrowUturnLeftIcon />
-              Restore
-            </button>
-          ) : folder === 'drafts' ? (
-            <>
-              <button className={styles.actionButton} onClick={() => onEditDraft?.(mail)}>
-                <PencilSquareIcon />
-                Edit draft
-              </button>
-              <button className={`${styles.actionButton} ${styles.danger}`} onClick={() => onDelete(mail._id)}>
-                <TrashIcon />
-                Delete
-              </button>
-            </>
-          ) : (
-            <button className={`${styles.actionButton} ${styles.danger}`} onClick={() => onDelete(mail._id)}>
-              <TrashIcon />
-              Delete
-            </button>
-          )}
-        </div>
-      </header>
 
-      <div className={styles.body}>
-        <div className={styles.mailMeta}>
-          <div>
-            <p className={styles.label}>Subject</p>
-            <h2 title={mail.subject || '(No subject)'}>{mail.subject || '(No subject)'}</h2>
+        <div className={styles.emailBody}>
+          <p>{mail.body || 'No content'}</p>
+        </div>
+      </div>
+
+      <div className={styles.replySection}>
+        <form onSubmit={handleSendReply}>
+          <textarea
+            className={styles.replyInput}
+            placeholder="Write your reply..."
+            value={replyText}
+            onChange={(e) => setReplyText(e.target.value)}
+            rows={6}
+          />
+          <div className={styles.replyToolbar}>
+            <div className={styles.formattingTools}>
+              <select className={styles.fontSelect}>
+                <option>Tf</option>
+              </select>
+              <button type="button" className={styles.formatBtn}>B</button>
+              <button type="button" className={styles.formatBtn}>I</button>
+              <button type="button" className={styles.formatBtn}>U</button>
+              <select className={styles.fontSelect}>
+                <option>99</option>
+              </select>
+              <button type="button" className={styles.formatBtn}>≡</button>
+              <button type="button" className={styles.formatBtn}>≡</button>
+              <button type="button" className={styles.formatBtn}>≡</button>
+              <button type="button" className={styles.formatBtn}>≡</button>
+            </div>
+            <div className={styles.replyActions}>
+              <button type="button" className={styles.actionIcon}>
+                <PaperClipIcon />
+              </button>
+              <button type="button" className={styles.actionIcon}>
+                <LinkIcon />
+              </button>
+              <button type="button" className={styles.actionIcon}>😊</button>
+              <button type="button" className={styles.actionIcon}>
+                <PhotoIcon />
+              </button>
+              <button type="button" className={styles.actionIcon}>
+                <TrashIcon />
+              </button>
+              <button type="button" className={styles.actionIcon}>
+                <EllipsisHorizontalIcon />
+              </button>
+              <button type="submit" className={styles.sendBtn}>
+                <PaperAirplaneIcon />
+                Send
+              </button>
+            </div>
           </div>
-          <p className={styles.timestamp}>
-            {new Date(mail.createdAt).toLocaleString(undefined, {
-              weekday: 'short',
-              hour: '2-digit',
-              minute: '2-digit',
-              day: '2-digit',
-              month: 'long',
-            })}
-          </p>
-        </div>
-        <div className={styles.contentCard}>
-          <p className={styles.content}>{mail.body || 'No content'}</p>
-        </div>
+        </form>
       </div>
     </section>
   );
