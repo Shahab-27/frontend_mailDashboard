@@ -27,6 +27,8 @@ const ComposeModal = () => {
   const [showSchedule, setShowSchedule] = useState(false);
   const [isRichText, setIsRichText] = useState(false);
   const [attachments, setAttachments] = useState([]);
+  const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState({});
   const editorRef = useRef(null);
   const fileInputRef = useRef(null);
 
@@ -101,6 +103,49 @@ const ComposeModal = () => {
     return now.toISOString().slice(0, 16);
   };
 
+  const uploadFilesToCloudinary = async (files) => {
+    if (files.length === 0) return [];
+
+    setUploading(true);
+    setUploadProgress({});
+
+    try {
+      // Convert files to base64
+      const filePromises = files.map(async (file) => {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => {
+            resolve({
+              fileData: reader.result, // data URL format
+              fileName: file.name,
+              fileType: file.type,
+            });
+          };
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+      });
+
+      const fileDataArray = await Promise.all(filePromises);
+
+      // Upload to backend
+      const response = await api.post('/upload/multiple', {
+        files: fileDataArray,
+      });
+
+      if (response.data && response.data.files) {
+        return response.data.files;
+      }
+      return [];
+    } catch (error) {
+      console.error('Upload error:', error);
+      throw new Error('Failed to upload attachments: ' + (error.response?.data?.message || error.message));
+    } finally {
+      setUploading(false);
+      setUploadProgress({});
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -117,7 +162,13 @@ const ComposeModal = () => {
 
     setStatus({ loading: true, error: '' });
     try {
-      const mailData = { ...form };
+      // Upload attachments first
+      let uploadedAttachments = [];
+      if (attachments.length > 0) {
+        uploadedAttachments = await uploadFilesToCloudinary(attachments);
+      }
+
+      const mailData = { ...form, attachments: uploadedAttachments };
       
       // Combine scheduled date and time if scheduling
       if (showSchedule && form.scheduledDate && form.scheduledTime) {
@@ -127,7 +178,7 @@ const ComposeModal = () => {
       await sendMail({ ...mailData, draftId });
       toggleCompose(false);
     } catch (error) {
-      setStatus({ loading: false, error });
+      setStatus({ loading: false, error: error.message || 'Failed to send email' });
     }
   };
 
@@ -447,11 +498,23 @@ const ComposeModal = () => {
                 setAttachments(prev => [...prev, ...files]);
               }}
             />
+            {uploading && (
+              <div className={styles.uploadStatus}>
+                <div className={styles.spinner}></div>
+                <span>Uploading files...</span>
+              </div>
+            )}
             {attachments.length > 0 && (
               <div className={styles.attachmentsList}>
                 {attachments.map((file, index) => (
                   <div key={index} className={styles.attachmentItem}>
-                    <span className={styles.attachmentName}>{file.name}</span>
+                    <PaperClipIcon className={styles.attachmentIcon} />
+                    <span className={styles.attachmentName} title={file.name}>
+                      {file.name}
+                    </span>
+                    <span className={styles.attachmentSize}>
+                      {(file.size / 1024).toFixed(1)} KB
+                    </span>
                     <button
                       type="button"
                       className={styles.removeAttachmentBtn}
