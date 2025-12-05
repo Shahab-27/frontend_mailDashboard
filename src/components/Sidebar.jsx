@@ -1,10 +1,11 @@
- import { InboxIcon, PaperAirplaneIcon, TrashIcon, ArchiveBoxIcon, PencilSquareIcon } from '@heroicons/react/24/outline';
+ import { InboxIcon, PaperAirplaneIcon, TrashIcon, ArchiveBoxIcon, PencilSquareIcon, ClockIcon } from '@heroicons/react/24/outline';
 import styles from './Sidebar.module.css';
 
 const items = [
   { id: 'inbox', label: 'Inbox', icon: InboxIcon },
   { id: 'sent', label: 'Sent', icon: PaperAirplaneIcon },
   { id: 'drafts', label: 'Drafts', icon: ArchiveBoxIcon },
+  { id: 'scheduled', label: 'Scheduled', icon: ClockIcon },
   { id: 'trash', label: 'Trash', icon: TrashIcon },
 ];
 

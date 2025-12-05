@@ -4,6 +4,8 @@ import styles from './MailList.module.css';
 const folderLabels = {
   inbox: 'Inbox',
   sent: 'Sent',
+  drafts: 'Drafts',
+  scheduled: 'Scheduled',
   trash: 'Trash',
 };
 
