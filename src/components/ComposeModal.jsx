@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { PaperAirplaneIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { PaperAirplaneIcon, XMarkIcon, SparklesIcon } from '@heroicons/react/24/outline';
 import useMailStore from '../store/mailStore';
 import styles from './ComposeModal.module.css';
 
@@ -15,6 +15,9 @@ const ComposeModal = () => {
   const [status, setStatus] = useState({ loading: false, error: '' });
   const [draftState, setDraftState] = useState({ saving: false, message: '' });
   const [draftId, setDraftId] = useState(null);
+  const [aiLoading, setAiLoading] = useState(false);
+
+  const GEMINI_API_KEY = 'AIzaSyDbosh5jfhGyAonmk3Li48528EwbNkhC7I';
 
   useEffect(() => {
     if (!isComposeOpen) {
@@ -22,6 +25,7 @@ const ComposeModal = () => {
       setDraftId(null);
       setDraftState({ saving: false, message: '' });
       setStatus({ loading: false, error: '' });
+      setAiLoading(false);
       return;
     }
 
@@ -76,6 +80,58 @@ const ComposeModal = () => {
     if (event.target === event.currentTarget) toggleCompose(false);
   };
 
+  const handleAIGenerate = async () => {
+    if (!form.body.trim()) {
+      setStatus({ loading: false, error: 'Please enter a message first' });
+      return;
+    }
+
+    setAiLoading(true);
+    setStatus({ loading: false, error: '' });
+
+    try {
+      const prompt = `i have to send mail ${form.body} give only the content in short and formal`;
+
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            contents: [
+              {
+                parts: [
+                  {
+                    text: prompt,
+                  },
+                ],
+              },
+            ],
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('Failed to generate message');
+      }
+
+      const data = await response.json();
+      const generatedText = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+
+      if (generatedText) {
+        setForm((prev) => ({ ...prev, body: generatedText.trim() }));
+      } else {
+        throw new Error('No response from AI');
+      }
+    } catch (error) {
+      setStatus({ loading: false, error: 'Failed to generate formal message. Please try again.' });
+    } finally {
+      setAiLoading(false);
+    }
+  };
+
   return (
     <div className={styles.overlay} onClick={handleOverlayClick} role="dialog" aria-modal="true">
       <form className={styles.modal} onSubmit={handleSubmit}>
@@ -93,9 +149,25 @@ const ComposeModal = () => {
           Subject
           <input name="subject" value={form.subject} onChange={handleChange} />
         </label>
-        <label>
+        <label className={styles.messageLabel}>
           Message
-          <textarea name="body" rows={6} value={form.body} onChange={handleChange} />
+          <div className={styles.textareaWrapper}>
+            <textarea name="body" rows={6} value={form.body} onChange={handleChange} />
+            <button
+              type="button"
+              className={styles.aiButton}
+              onClick={handleAIGenerate}
+              disabled={aiLoading || !form.body.trim()}
+              title="Generate formal message with AI"
+              aria-label="Generate formal message with AI"
+            >
+              {aiLoading ? (
+                <div className={styles.spinner}></div>
+              ) : (
+                <SparklesIcon className={styles.sparkleIcon} />
+              )}
+            </button>
+          </div>
         </label>
         {status.error && <p className={styles.error}>{status.error}</p>}
         <div className={styles.actions}>

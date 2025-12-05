@@ -82,6 +82,10 @@
   color: rgba(15, 23, 42, 0.6);
 }
 
+.messageLabel {
+  position: relative;
+}
+
 .modal input,
 .modal textarea {
   border-radius: 14px;
@@ -90,6 +94,17 @@
   background: rgba(255, 255, 255, 0.8);
   transition: all 0.3s ease;
   font-size: 0.95rem;
+}
+
+.textareaWrapper {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+}
+
+.textareaWrapper textarea {
+  width: 100%;
+  padding-bottom: 3rem;
 }
 
 .modal input:focus,
@@ -212,6 +227,74 @@
   to {
     transform: translateY(0);
     opacity: 1;
+  }
+}
+
+.aiButton {
+  position: absolute;
+  bottom: 0.75rem;
+  right: 0.75rem;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(251, 191, 36, 0.4), 0 2px 6px rgba(245, 158, 11, 0.3);
+  z-index: 10;
+  animation: shine 2s ease-in-out infinite;
+}
+
+.aiButton:hover:not(:disabled) {
+  transform: scale(1.1) rotate(15deg);
+  box-shadow: 0 6px 20px rgba(251, 191, 36, 0.6), 0 4px 10px rgba(245, 158, 11, 0.4);
+  background: linear-gradient(135deg, #fcd34d 0%, #fbbf24 100%);
+}
+
+.aiButton:active:not(:disabled) {
+  transform: scale(0.95) rotate(15deg);
+}
+
+.aiButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  animation: none;
+}
+
+.sparkleIcon {
+  width: 22px;
+  height: 22px;
+  color: white;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes shine {
+  0%, 100% {
+    box-shadow: 0 4px 12px rgba(251, 191, 36, 0.4), 0 2px 6px rgba(245, 158, 11, 0.3),
+      0 0 0 0 rgba(251, 191, 36, 0.7);
+  }
+  50% {
+    box-shadow: 0 4px 12px rgba(251, 191, 36, 0.4), 0 2px 6px rgba(245, 158, 11, 0.3),
+      0 0 0 8px rgba(251, 191, 36, 0);
   }
 }
 
