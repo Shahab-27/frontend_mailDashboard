@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { PaperAirplaneIcon, XMarkIcon, ClockIcon } from '@heroicons/react/24/outline';
+import { PaperAirplaneIcon, XMarkIcon, ClockIcon, PaperClipIcon } from '@heroicons/react/24/outline';
 import useMailStore from '../store/mailStore';
 import api from '../utils/api';
 import styles from './ComposeModal.module.css';
@@ -26,7 +26,9 @@ const ComposeModal = () => {
   const [showBCC, setShowBCC] = useState(false);
   const [showSchedule, setShowSchedule] = useState(false);
   const [isRichText, setIsRichText] = useState(false);
+  const [attachments, setAttachments] = useState([]);
   const editorRef = useRef(null);
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     if (!isComposeOpen) {
@@ -35,6 +37,7 @@ const ComposeModal = () => {
       setDraftState({ saving: false, message: '' });
       setStatus({ loading: false, error: '' });
       setAiLoading(false);
+      setAttachments([]);
       return;
     }
 
@@ -424,49 +427,44 @@ const ComposeModal = () => {
           </div>
           
           <div className={styles.sidebarSection}>
-            <h4 className={styles.sidebarTitle}>Email Info</h4>
-            <div className={styles.emailInfo}>
-              <div className={styles.infoItem}>
-                <span className={styles.infoLabel}>To:</span>
-                <span className={styles.infoValue}>{form.to || 'Not set'}</span>
+            <h4 className={styles.sidebarTitle}>Attachments</h4>
+            <button
+              type="button"
+              className={styles.attachBtn}
+              onClick={() => fileInputRef.current?.click()}
+              title="Add attachment"
+            >
+              <PaperClipIcon />
+              <span>Add Attachment</span>
+            </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              multiple
+              style={{ display: 'none' }}
+              onChange={(e) => {
+                const files = Array.from(e.target.files || []);
+                setAttachments(prev => [...prev, ...files]);
+              }}
+            />
+            {attachments.length > 0 && (
+              <div className={styles.attachmentsList}>
+                {attachments.map((file, index) => (
+                  <div key={index} className={styles.attachmentItem}>
+                    <span className={styles.attachmentName}>{file.name}</span>
+                    <button
+                      type="button"
+                      className={styles.removeAttachmentBtn}
+                      onClick={() => setAttachments(prev => prev.filter((_, i) => i !== index))}
+                      title="Remove attachment"
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
               </div>
-              {form.cc && (
-                <div className={styles.infoItem}>
-                  <span className={styles.infoLabel}>Cc:</span>
-                  <span className={styles.infoValue}>{form.cc}</span>
-                </div>
-              )}
-              {form.bcc && (
-                <div className={styles.infoItem}>
-                  <span className={styles.infoLabel}>Bcc:</span>
-                  <span className={styles.infoValue}>{form.bcc}</span>
-                </div>
-              )}
-              {form.subject && (
-                <div className={styles.infoItem}>
-                  <span className={styles.infoLabel}>Subject:</span>
-                  <span className={styles.infoValue}>{form.subject}</span>
-                </div>
-              )}
-              {showSchedule && form.scheduledDate && (
-                <div className={styles.infoItem}>
-                  <span className={styles.infoLabel}>Scheduled:</span>
-                  <span className={styles.infoValue}>
-                    {new Date(`${form.scheduledDate}T${form.scheduledTime}`).toLocaleString()}
-                  </span>
-                </div>
-              )}
-            </div>
+            )}
           </div>
-
-          {form.body && (
-            <div className={styles.sidebarSection}>
-              <h4 className={styles.sidebarTitle}>Preview</h4>
-              <div className={styles.previewBox}>
-                <div className={styles.previewContent} dangerouslySetInnerHTML={{ __html: form.htmlBody || form.body.replace(/\n/g, '<br>') }} />
-              </div>
-            </div>
-          )}
         </div>
       </form>
     </div>

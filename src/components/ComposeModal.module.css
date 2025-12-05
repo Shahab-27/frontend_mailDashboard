@@ -426,10 +426,6 @@
 
 .sidebarSection:last-child {
   border-bottom: none;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
 }
 
 .sidebarTitle {
@@ -513,54 +509,85 @@
   line-height: 1.4;
 }
 
-.previewBox {
-  background: rgba(255, 255, 255, 0.9);
-  border: 1.5px solid rgba(34, 197, 94, 0.15);
+.attachBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1rem;
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, rgba(34, 197, 94, 0.1) 100%);
+  border: 1.5px solid rgba(34, 197, 94, 0.25);
   border-radius: 12px;
-  padding: 1rem;
-  flex: 1;
-  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #15803d;
+  text-align: left;
+  width: 100%;
+}
+
+.attachBtn svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.attachBtn:hover {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.25) 0%, rgba(34, 197, 94, 0.2) 100%);
+  border-color: rgba(34, 197, 94, 0.4);
+  color: #14532d;
+  transform: translateX(4px);
+  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.2);
+}
+
+.attachmentsList {
+  margin-top: 1rem;
   display: flex;
   flex-direction: column;
-  min-height: 0;
+  gap: 0.5rem;
 }
 
-.previewContent {
+.attachmentItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.625rem 0.875rem;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1.5px solid rgba(34, 197, 94, 0.15);
+  border-radius: 8px;
   font-size: 0.8125rem;
-  line-height: 1.6;
-  color: rgba(15, 23, 42, 0.8);
-  overflow-y: auto;
+  gap: 0.5rem;
+}
+
+.attachmentName {
   flex: 1;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(34, 197, 94, 0.2) transparent;
+  color: #0f172a;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.previewContent::-webkit-scrollbar {
-  width: 4px;
+.removeAttachmentBtn {
+  background: none;
+  border: none;
+  color: rgba(239, 68, 68, 0.7);
+  font-size: 1.25rem;
+  cursor: pointer;
+  padding: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
 }
 
-.previewContent::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.previewContent::-webkit-scrollbar-thumb {
-  background: rgba(34, 197, 94, 0.2);
-  border-radius: 2px;
-}
-
-.previewContent p {
-  margin: 0.5rem 0;
-}
-
-.previewContent ul,
-.previewContent ol {
-  margin: 0.5rem 0;
-  padding-left: 1.25rem;
-}
-
-.previewContent a {
-  color: #22c55e;
-  text-decoration: underline;
+.removeAttachmentBtn:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
 }
 
 .richTextWrapper {
