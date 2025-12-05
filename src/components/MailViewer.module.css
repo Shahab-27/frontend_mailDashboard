@@ -2,10 +2,10 @@
   width: 100%;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.9) 100%);
   border-left: 1px solid rgba(34, 197, 94, 0.1);
-  padding: 2.5rem 2.75rem;
+  padding: 1.5rem 2rem;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1.25rem;
   backdrop-filter: blur(20px);
   height: 100%;
   overflow-y: auto;
@@ -48,13 +48,13 @@
 
 .partyCard {
   display: flex;
-  gap: 1rem;
+  gap: 0.75rem;
   align-items: flex-start;
-  padding: 1.15rem 1.4rem;
-  border-radius: 18px;
+  padding: 0.875rem 1.125rem;
+  border-radius: 12px;
   border: 1.5px solid rgba(34, 197, 94, 0.15);
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 250, 252, 0.8) 100%);
-  box-shadow: 0 4px 16px rgba(34, 197, 94, 0.08), inset 0 1px 2px rgba(255, 255, 255, 0.5);
+  box-shadow: 0 3px 12px rgba(34, 197, 94, 0.08), inset 0 1px 2px rgba(255, 255, 255, 0.5);
   transition: all 0.3s ease;
 }
 
@@ -65,18 +65,18 @@
 }
 
 .avatar {
-  width: 48px;
-  height: 48px;
-  border-radius: 14px;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
   background: linear-gradient(135deg, rgba(34, 197, 94, 0.2) 0%, rgba(34, 197, 94, 0.15) 100%);
   display: grid;
   place-items: center;
   font-weight: 700;
-  font-size: 1.1rem;
+  font-size: 0.875rem;
   color: #15803d;
   letter-spacing: 0.05em;
   border: 2px solid rgba(34, 197, 94, 0.2);
-  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.15);
+  box-shadow: 0 2px 6px rgba(34, 197, 94, 0.15);
 }
 
 .partyDetails {
@@ -108,21 +108,21 @@
 .actionButton {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.4rem;
-  border-radius: 12px;
+  gap: 0.4rem;
+  padding: 0.5rem 1rem;
+  border-radius: 10px;
   background: linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, rgba(34, 197, 94, 0.1) 100%);
   color: #0f172a;
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.8125rem;
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   border: 1px solid rgba(34, 197, 94, 0.2);
-  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.1);
+  box-shadow: 0 2px 6px rgba(34, 197, 94, 0.1);
 }
 
 .actionButton svg {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   stroke-width: 2.5;
 }
 
@@ -176,12 +176,12 @@
 }
 
 .contentCard {
-  margin-top: 1rem;
-  padding: 2rem;
-  border-radius: 20px;
+  margin-top: 0.75rem;
+  padding: 1.5rem;
+  border-radius: 12px;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 250, 252, 0.8) 100%);
   border: 1.5px solid rgba(34, 197, 94, 0.12);
-  box-shadow: 0 4px 16px rgba(34, 197, 94, 0.06), inset 0 1px 2px rgba(255, 255, 255, 0.5);
+  box-shadow: 0 3px 12px rgba(34, 197, 94, 0.06), inset 0 1px 2px rgba(255, 255, 255, 0.5);
 }
 
 .content {
