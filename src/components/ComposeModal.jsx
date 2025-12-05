@@ -181,16 +181,51 @@ const ComposeModal = () => {
   return (
     <div className={styles.overlay} onClick={handleOverlayClick} role="dialog" aria-modal="true">
       <form className={styles.modal} onSubmit={handleSubmit}>
-        <header className={styles.header}>
-          <h3>Compose Mail</h3>
-          <button type="button" className={styles.closeBtn} aria-label="Close compose window" onClick={() => toggleCompose(false)}>
-            <XMarkIcon />
-          </button>
-        </header>
+        <div className={styles.modalContent}>
+          <header className={styles.header}>
+            <h3>Compose Mail</h3>
+            <button type="button" className={styles.closeBtn} aria-label="Close compose window" onClick={() => toggleCompose(false)}>
+              <XMarkIcon />
+            </button>
+          </header>
         <label>
           To
           <input name="to" type="email" value={form.to} required onChange={handleChange} placeholder="recipient@example.com" />
         </label>
+        <div className={styles.optionalFields}>
+          <button 
+            type="button" 
+            className={`${styles.linkBtn} ${(showCC || form.cc) ? styles.active : ''}`} 
+            onClick={() => {
+              if (showCC) {
+                setShowCC(false);
+                if (!form.cc) {
+                  setForm(prev => ({ ...prev, cc: '' }));
+                }
+              } else {
+                setShowCC(true);
+              }
+            }}
+          >
+            Cc
+          </button>
+          <button 
+            type="button" 
+            className={`${styles.linkBtn} ${(showBCC || form.bcc) ? styles.active : ''}`} 
+            onClick={() => {
+              if (showBCC) {
+                setShowBCC(false);
+                if (!form.bcc) {
+                  setForm(prev => ({ ...prev, bcc: '' }));
+                }
+              } else {
+                setShowBCC(true);
+              }
+            }}
+          >
+            Bcc
+          </button>
+        </div>
         {(showCC || form.cc) && (
           <label>
             Cc
@@ -203,39 +238,12 @@ const ComposeModal = () => {
             <input name="bcc" type="email" value={form.bcc} onChange={handleChange} placeholder="bcc@example.com" />
           </label>
         )}
-        <div className={styles.optionalFields}>
-          {!showCC && (
-            <button type="button" className={styles.linkBtn} onClick={() => setShowCC(true)}>
-              Cc
-            </button>
-          )}
-          {!showBCC && (
-            <button type="button" className={styles.linkBtn} onClick={() => setShowBCC(true)}>
-              Bcc
-            </button>
-          )}
-        </div>
         <label>
           Subject
           <input name="subject" value={form.subject} onChange={handleChange} placeholder="Email subject" />
         </label>
         <label className={styles.messageLabel}>
-          <div className={styles.messageHeader}>
-            <span>Message</span>
-            <div className={styles.messageControls}>
-              <button
-                type="button"
-                className={`${styles.formatBtn} ${isRichText ? styles.active : ''}`}
-                onClick={() => setIsRichText(!isRichText)}
-                title="Toggle rich text editor"
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M6 4h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"></path>
-                  <path d="M6 12h9"></path>
-                </svg>
-              </button>
-            </div>
-          </div>
+          <span>Message</span>
           {isRichText ? (
             <div className={styles.richTextWrapper}>
               <div className={styles.toolbar}>
@@ -386,6 +394,80 @@ const ComposeModal = () => {
           </button>
         </div>
         {draftState.message && <p className={styles.meta}>{draftState.message}</p>}
+        </div>
+        <div className={styles.modalSidebar}>
+          <div className={styles.sidebarSection}>
+            <h4 className={styles.sidebarTitle}>Quick Actions</h4>
+            <div className={styles.quickActions}>
+              <button
+                type="button"
+                className={`${styles.quickActionBtn} ${isRichText ? styles.active : ''}`}
+                onClick={() => setIsRichText(!isRichText)}
+                title="Toggle rich text editor"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M6 4h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"></path>
+                  <path d="M6 12h9"></path>
+                </svg>
+                <span>Rich Text</span>
+              </button>
+              <button
+                type="button"
+                className={`${styles.quickActionBtn} ${showSchedule ? styles.active : ''}`}
+                onClick={() => setShowSchedule(!showSchedule)}
+                title="Schedule email"
+              >
+                <ClockIcon />
+                <span>Schedule</span>
+              </button>
+            </div>
+          </div>
+          
+          <div className={styles.sidebarSection}>
+            <h4 className={styles.sidebarTitle}>Email Info</h4>
+            <div className={styles.emailInfo}>
+              <div className={styles.infoItem}>
+                <span className={styles.infoLabel}>To:</span>
+                <span className={styles.infoValue}>{form.to || 'Not set'}</span>
+              </div>
+              {form.cc && (
+                <div className={styles.infoItem}>
+                  <span className={styles.infoLabel}>Cc:</span>
+                  <span className={styles.infoValue}>{form.cc}</span>
+                </div>
+              )}
+              {form.bcc && (
+                <div className={styles.infoItem}>
+                  <span className={styles.infoLabel}>Bcc:</span>
+                  <span className={styles.infoValue}>{form.bcc}</span>
+                </div>
+              )}
+              {form.subject && (
+                <div className={styles.infoItem}>
+                  <span className={styles.infoLabel}>Subject:</span>
+                  <span className={styles.infoValue}>{form.subject}</span>
+                </div>
+              )}
+              {showSchedule && form.scheduledDate && (
+                <div className={styles.infoItem}>
+                  <span className={styles.infoLabel}>Scheduled:</span>
+                  <span className={styles.infoValue}>
+                    {new Date(`${form.scheduledDate}T${form.scheduledTime}`).toLocaleString()}
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {form.body && (
+            <div className={styles.sidebarSection}>
+              <h4 className={styles.sidebarTitle}>Preview</h4>
+              <div className={styles.previewBox}>
+                <div className={styles.previewContent} dangerouslySetInnerHTML={{ __html: form.htmlBody || form.body.replace(/\n/g, '<br>') }} />
+              </div>
+            </div>
+          )}
+        </div>
       </form>
     </div>
   );
