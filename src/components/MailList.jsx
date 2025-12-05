@@ -7,13 +7,18 @@ const folderLabels = {
   trash: 'Trash',
 };
 
-const MailList = ({ mails, loading, selectedId, onSelect, folder }) => (
+const MailList = ({ mails, loading, selectedId, onSelect, folder, onEmptyTrash }) => (
   <section className={styles.list}>
     <div className={styles.header}>
       <div>
         <h3>{folderLabels[folder] || 'Emails'}</h3>
         <p>{mails.length} messages</p>
       </div>
+      {folder === 'trash' && mails.length > 0 && (
+        <button className={styles.emptyTrashBtn} onClick={onEmptyTrash}>
+          Empty Trash
+        </button>
+      )}
     </div>
 
     {loading ? (

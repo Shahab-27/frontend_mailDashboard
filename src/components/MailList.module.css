@@ -17,6 +17,26 @@
   align-items: center;
 }
 
+.emptyTrashBtn {
+  padding: 0.5rem 1rem;
+  background: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.emptyTrashBtn:hover {
+  background: #dc2626;
+}
+
+.emptyTrashBtn:active {
+  background: #b91c1c;
+}
+
 .header h3 {
   margin: 0;
 }

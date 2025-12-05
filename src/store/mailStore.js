@@ -128,6 +128,18 @@ const useMailStore = create((set, get) => ({
     }
   },
 
+  emptyTrash: async () => {
+    try {
+      await api.delete('/mail/trash');
+      set((state) => ({
+        mails: state.folder === 'trash' ? [] : state.mails,
+        selectedMail: state.folder === 'trash' ? null : state.selectedMail,
+      }));
+    } catch (error) {
+      throw error.response?.data?.message || 'Unable to empty trash';
+    }
+  },
+
   authenticate: async (endpoint, payload) => {
     try {
       const { data } = await api.post(`/auth/${endpoint}`, payload);

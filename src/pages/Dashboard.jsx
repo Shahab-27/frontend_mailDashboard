@@ -22,6 +22,7 @@ const Dashboard = () => {
     logout,
     deleteMail,
     restoreMail,
+    emptyTrash,
   } = useMailStore();
 
   useEffect(() => {
@@ -60,6 +61,16 @@ const Dashboard = () => {
     toggleCompose(true, draftMail);
   };
 
+  const handleEmptyTrash = async () => {
+    if (window.confirm('Are you sure you want to permanently delete all emails in trash? This action cannot be undone.')) {
+      try {
+        await emptyTrash();
+      } catch (error) {
+        alert(error || 'Failed to empty trash');
+      }
+    }
+  };
+
   return (
     <div className={styles.dashboard}>
       <Sidebar
@@ -77,6 +88,7 @@ const Dashboard = () => {
             selectedId={selectedMail?._id}
             onSelect={handleSelectMail}
             folder={folder}
+            onEmptyTrash={handleEmptyTrash}
           />
           <MailViewer mail={selectedMail} onDelete={handleDelete} onRestore={handleRestore} folder={folder} onEditDraft={handleEditDraft} />
         </div>
