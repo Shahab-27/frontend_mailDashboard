@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { PaperAirplaneIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import useMailStore from '../store/mailStore';
+import api from '../utils/api';
 import styles from './ComposeModal.module.css';
 
 const initialState = {
@@ -16,8 +17,6 @@ const ComposeModal = () => {
   const [draftState, setDraftState] = useState({ saving: false, message: '' });
   const [draftId, setDraftId] = useState(null);
   const [aiLoading, setAiLoading] = useState(false);
-
-  const GEMINI_API_KEY = 'AIzaSyDbosh5jfhGyAonmk3Li48528EwbNkhC7I';
 
   useEffect(() => {
     if (!isComposeOpen) {
@@ -90,43 +89,20 @@ const ComposeModal = () => {
     setStatus({ loading: false, error: '' });
 
     try {
-      const prompt = `i have to send mail ${form.body} give only the content in short and formal`;
+      const response = await api.post('/mail/generate-formal', {
+        message: form.body,
+      });
 
-      const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            contents: [
-              {
-                parts: [
-                  {
-                    text: prompt,
-                  },
-                ],
-              },
-            ],
-          }),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error('Failed to generate message');
-      }
-
-      const data = await response.json();
-      const generatedText = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-
-      if (generatedText) {
-        setForm((prev) => ({ ...prev, body: generatedText.trim() }));
+      if (response.data && response.data.message) {
+        setForm((prev) => ({ ...prev, body: response.data.message }));
+        setStatus({ loading: false, error: '' });
       } else {
         throw new Error('No response from AI');
       }
     } catch (error) {
-      setStatus({ loading: false, error: 'Failed to generate formal message. Please try again.' });
+      console.error('AI Generation Error:', error);
+      const errorMessage = error.response?.data?.message || error.message || 'Failed to generate formal message. Please try again.';
+      setStatus({ loading: false, error: errorMessage });
     } finally {
       setAiLoading(false);
     }
