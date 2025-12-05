@@ -79,9 +79,9 @@ const useMailStore = create((set, get) => ({
     }
   },
 
-  sendMail: async (payload) => {
+  sendMail: async (payload, draftId) => {
     try {
-      const { data } = await api.post('/mail/send', payload);
+      const { data } = await api.post('/mail/send', { ...payload, draftId });
       set((state) => {
         const updates = {};
         if (state.folder === 'sent') {

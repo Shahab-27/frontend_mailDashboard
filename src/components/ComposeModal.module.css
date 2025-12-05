@@ -302,3 +302,228 @@
   }
 }
 
+.optionalFields {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: -0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.linkBtn {
+  background: none;
+  border: none;
+  color: rgba(34, 197, 94, 0.8);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.linkBtn:hover {
+  background: rgba(34, 197, 94, 0.1);
+  color: #22c55e;
+}
+
+.messageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.messageControls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.formatBtn {
+  padding: 0.4rem 0.6rem;
+  border: 1px solid rgba(34, 197, 94, 0.2);
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+}
+
+.formatBtn:hover {
+  background: rgba(34, 197, 94, 0.1);
+  border-color: rgba(34, 197, 94, 0.3);
+}
+
+.formatBtn.active {
+  background: rgba(34, 197, 94, 0.15);
+  border-color: rgba(34, 197, 94, 0.4);
+  color: #15803d;
+}
+
+.richTextWrapper {
+  position: relative;
+  border: 1.5px solid rgba(34, 197, 94, 0.15);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.8);
+  overflow: hidden;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.5rem;
+  border-bottom: 1px solid rgba(34, 197, 94, 0.1);
+  background: rgba(248, 250, 252, 0.5);
+}
+
+.toolbar button {
+  padding: 0.4rem 0.6rem;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.875rem;
+  color: rgba(15, 23, 42, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+}
+
+.toolbar button:hover {
+  background: rgba(34, 197, 94, 0.1);
+  color: #15803d;
+}
+
+.toolbarDivider {
+  width: 1px;
+  height: 20px;
+  background: rgba(34, 197, 94, 0.2);
+  margin: 0 0.25rem;
+}
+
+.richTextEditor {
+  min-height: 150px;
+  max-height: 300px;
+  overflow-y: auto;
+  padding: 0.875rem 1rem;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: #0f172a;
+  outline: none;
+}
+
+.richTextEditor:focus {
+  outline: none;
+}
+
+.richTextEditor p {
+  margin: 0.5rem 0;
+}
+
+.richTextEditor ul,
+.richTextEditor ol {
+  margin: 0.5rem 0;
+  padding-left: 1.5rem;
+}
+
+.richTextEditor a {
+  color: #22c55e;
+  text-decoration: underline;
+}
+
+.scheduleHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.clockIcon {
+  width: 16px;
+  height: 16px;
+  color: rgba(34, 197, 94, 0.8);
+}
+
+.removeBtn {
+  margin-left: auto;
+  background: none;
+  border: none;
+  color: rgba(15, 23, 42, 0.5);
+  font-size: 1.25rem;
+  cursor: pointer;
+  padding: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.removeBtn:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+.scheduleInputs {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.scheduleInputs input {
+  flex: 1;
+  border-radius: 10px;
+  border: 1.5px solid rgba(34, 197, 94, 0.15);
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.8);
+  transition: all 0.3s ease;
+  font-size: 0.875rem;
+}
+
+.scheduleInputs input:focus {
+  border-color: rgba(34, 197, 94, 0.35);
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.1);
+  outline: none;
+}
+
+.leftActions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.scheduleBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.12) 0%, rgba(34, 197, 94, 0.08) 100%);
+  color: #15803d;
+  font-weight: 600;
+  font-size: 0.8125rem;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(34, 197, 94, 0.2);
+  box-shadow: 0 2px 6px rgba(34, 197, 94, 0.1);
+  cursor: pointer;
+}
+
+.scheduleBtn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.scheduleBtn:hover {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.2) 0%, rgba(34, 197, 94, 0.15) 100%);
+  color: #14532d;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(34, 197, 94, 0.2);
+}
+
