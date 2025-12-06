@@ -76,8 +76,41 @@ const MailViewer = ({ mail, onDelete, onRestore, folder, onEditDraft }) => {
           </p>
         </div>
         <div className={styles.contentCard}>
-          <p className={styles.content}>{mail.body || 'No content'}</p>
+          {mail.htmlBody ? (
+            <div 
+              className={styles.htmlContent} 
+              dangerouslySetInnerHTML={{ __html: mail.htmlBody }} 
+            />
+          ) : (
+            <p className={styles.content}>{mail.body || 'No content'}</p>
+          )}
         </div>
+        {mail.attachments && mail.attachments.length > 0 && (
+          <div className={styles.attachmentsSection}>
+            <h3 className={styles.attachmentsTitle}>Attachments ({mail.attachments.length})</h3>
+            <div className={styles.attachmentsList}>
+              {mail.attachments.map((attachment, index) => (
+                <a
+                  key={index}
+                  href={attachment.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.attachmentItem}
+                >
+                  <span className={styles.attachmentIcon}>📎</span>
+                  <div className={styles.attachmentInfo}>
+                    <span className={styles.attachmentName}>{attachment.fileName}</span>
+                    {attachment.fileSize && (
+                      <span className={styles.attachmentSize}>
+                        {(attachment.fileSize / 1024).toFixed(1)} KB
+                      </span>
+                    )}
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );
