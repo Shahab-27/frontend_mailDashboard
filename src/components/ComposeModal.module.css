@@ -36,8 +36,8 @@
 
 .modalSidebar {
   width: 280px;
-  background: linear-gradient(180deg, rgba(34, 197, 94, 0.08) 0%, rgba(34, 197, 94, 0.05) 100%);
-  border-left: 1px solid rgba(34, 197, 94, 0.1);
+  background: linear-gradient(180deg, rgba(139, 92, 246, 0.1) 0%, rgba(99, 102, 241, 0.08) 100%);
+  border-left: 1px solid rgba(139, 92, 246, 0.15);
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
@@ -52,7 +52,7 @@
   align-items: center;
   margin-bottom: 1rem;
   padding-bottom: 0.875rem;
-  border-bottom: 2px solid rgba(34, 197, 94, 0.15);
+  border-bottom: 2px solid rgba(139, 92, 246, 0.2);
   flex-shrink: 0;
 }
 
@@ -73,7 +73,7 @@
   height: 32px;
   border-radius: 10px;
   background: rgba(15, 23, 42, 0.06);
-  border: 1px solid rgba(34, 197, 94, 0.15);
+  border: 1px solid rgba(139, 92, 246, 0.2);
   display: grid;
   place-items: center;
   color: #0f172a;
@@ -87,10 +87,10 @@
 }
 
 .closeBtn:hover {
-  background: rgba(34, 197, 94, 0.12);
-  border-color: rgba(34, 197, 94, 0.25);
+  background: rgba(139, 92, 246, 0.15);
+  border-color: rgba(139, 92, 246, 0.3);
   transform: translateY(-2px) rotate(90deg);
-  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.2);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.25);
 }
 
 .closeBtn:active {
@@ -119,9 +119,10 @@
 .modalContent input,
 .modalContent textarea {
   border-radius: 12px;
-  border: 1.5px solid rgba(34, 197, 94, 0.15);
+  border: 1.5px solid rgba(139, 92, 246, 0.2);
   padding: 0.75rem 1rem;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.95);
+  color: #0f172a;
   transition: all 0.3s ease;
   font-size: 0.875rem;
   font-family: inherit;
@@ -130,9 +131,9 @@
 
 .modalContent input:focus,
 .modalContent textarea:focus {
-  border-color: rgba(34, 197, 94, 0.35);
+  border-color: rgba(139, 92, 246, 0.4);
   background: rgba(255, 255, 255, 1);
-  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.1), inset 0 1px 2px rgba(255, 255, 255, 0.5);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.15), inset 0 1px 2px rgba(255, 255, 255, 0.5);
   outline: none;
 }
 
@@ -152,6 +153,8 @@
   height: 100%;
   min-height: 120px;
   max-height: 200px;
+  color: #0f172a;
+  background: rgba(255, 255, 255, 0.95);
 }
 
 
@@ -168,7 +171,7 @@
   flex-wrap: wrap;
   padding-top: 1rem;
   margin-top: 0.75rem;
-  border-top: 2px solid rgba(34, 197, 94, 0.1);
+  border-top: 2px solid rgba(139, 92, 246, 0.15);
   flex-shrink: 0;
 }
 
@@ -187,11 +190,11 @@
 }
 
 .secondaryBtn:hover {
-  background: linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, rgba(34, 197, 94, 0.12) 100%);
-  color: #14532d;
-  border-color: rgba(34, 197, 94, 0.2);
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.18) 0%, rgba(99, 102, 241, 0.15) 100%);
+  color: #4f46e5;
+  border-color: rgba(139, 92, 246, 0.25);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.15);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.2);
 }
 
 .secondaryBtn:disabled {
@@ -233,7 +236,7 @@
 
 .sendBtn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 32px rgba(34, 197, 94, 0.5), 0 4px 12px rgba(34, 197, 94, 0.3);
+  box-shadow: 0 12px 32px rgba(99, 102, 241, 0.5), 0 4px 12px rgba(139, 92, 246, 0.4);
 }
 
 .sendBtn:active {
@@ -349,15 +352,15 @@
   gap: 0.5rem;
   margin-bottom: 0.75rem;
   padding: 0.5rem;
-  background: rgba(248, 250, 252, 0.6);
+  background: rgba(248, 250, 252, 0.7);
   border-radius: 10px;
-  border: 1px solid rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(139, 92, 246, 0.15);
 }
 
 .linkBtn {
-  background: rgba(255, 255, 255, 0.8);
-  border: 1.5px solid rgba(34, 197, 94, 0.2);
-  color: rgba(34, 197, 94, 0.8);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1.5px solid rgba(139, 92, 246, 0.25);
+  color: rgba(139, 92, 246, 0.8);
   font-size: 0.8125rem;
   font-weight: 600;
   cursor: pointer;
@@ -369,17 +372,17 @@
 }
 
 .linkBtn:hover {
-  background: rgba(34, 197, 94, 0.1);
-  color: #22c55e;
-  border-color: rgba(34, 197, 94, 0.3);
+  background: rgba(139, 92, 246, 0.12);
+  color: #8b5cf6;
+  border-color: rgba(139, 92, 246, 0.4);
   transform: translateY(-1px);
 }
 
 .linkBtn.active {
-  background: linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, rgba(34, 197, 94, 0.1) 100%);
-  color: #15803d;
-  border-color: rgba(34, 197, 94, 0.4);
-  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.15);
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(99, 102, 241, 0.15) 100%);
+  color: #6366f1;
+  border-color: rgba(139, 92, 246, 0.5);
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.2);
 }
 
 .messageHeader {
@@ -449,8 +452,8 @@
   align-items: center;
   gap: 0.75rem;
   padding: 0.875rem 1rem;
-  background: rgba(255, 255, 255, 0.9);
-  border: 1.5px solid rgba(34, 197, 94, 0.2);
+  background: rgba(255, 255, 255, 0.95);
+  border: 1.5px solid rgba(139, 92, 246, 0.25);
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.25s ease;
@@ -463,22 +466,22 @@
 .quickActionBtn svg {
   width: 18px;
   height: 18px;
-  color: rgba(34, 197, 94, 0.8);
+  color: rgba(139, 92, 246, 0.8);
   flex-shrink: 0;
 }
 
 .quickActionBtn:hover {
-  background: rgba(34, 197, 94, 0.1);
-  border-color: rgba(34, 197, 94, 0.3);
-  color: #15803d;
+  background: rgba(139, 92, 246, 0.12);
+  border-color: rgba(139, 92, 246, 0.4);
+  color: #6366f1;
   transform: translateX(4px);
 }
 
 .quickActionBtn.active {
-  background: linear-gradient(135deg, rgba(34, 197, 94, 0.2) 0%, rgba(34, 197, 94, 0.15) 100%);
-  border-color: rgba(34, 197, 94, 0.4);
-  color: #15803d;
-  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.15);
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.25) 0%, rgba(99, 102, 241, 0.2) 100%);
+  border-color: rgba(139, 92, 246, 0.5);
+  color: #6366f1;
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.2);
 }
 
 .emailInfo {
@@ -514,14 +517,14 @@
   align-items: center;
   gap: 0.75rem;
   padding: 0.875rem 1rem;
-  background: linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, rgba(34, 197, 94, 0.1) 100%);
-  border: 1.5px solid rgba(34, 197, 94, 0.25);
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.18) 0%, rgba(99, 102, 241, 0.15) 100%);
+  border: 1.5px solid rgba(139, 92, 246, 0.3);
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.25s ease;
   font-size: 0.875rem;
   font-weight: 600;
-  color: #15803d;
+  color: #6366f1;
   text-align: left;
   width: 100%;
 }
@@ -533,11 +536,11 @@
 }
 
 .attachBtn:hover {
-  background: linear-gradient(135deg, rgba(34, 197, 94, 0.25) 0%, rgba(34, 197, 94, 0.2) 100%);
-  border-color: rgba(34, 197, 94, 0.4);
-  color: #14532d;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.28) 0%, rgba(99, 102, 241, 0.25) 100%);
+  border-color: rgba(139, 92, 246, 0.45);
+  color: #4f46e5;
   transform: translateX(4px);
-  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.2);
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.25);
 }
 
 .attachmentsList {
@@ -593,7 +596,7 @@
 .attachmentIcon {
   width: 16px;
   height: 16px;
-  color: rgba(34, 197, 94, 0.7);
+  color: rgba(139, 92, 246, 0.7);
   flex-shrink: 0;
 }
 
@@ -609,18 +612,18 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem;
-  background: rgba(34, 197, 94, 0.1);
+  background: rgba(139, 92, 246, 0.12);
   border-radius: 8px;
   font-size: 0.8125rem;
-  color: #15803d;
+  color: #6366f1;
   margin-top: 0.75rem;
 }
 
 .uploadStatus .spinner {
   width: 16px;
   height: 16px;
-  border: 2px solid rgba(34, 197, 94, 0.3);
-  border-top-color: #22c55e;
+  border: 2px solid rgba(139, 92, 246, 0.3);
+  border-top-color: #8b5cf6;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
@@ -662,14 +665,14 @@
 }
 
 .toolbar button:hover {
-  background: rgba(34, 197, 94, 0.1);
-  color: #15803d;
+  background: rgba(139, 92, 246, 0.12);
+  color: #6366f1;
 }
 
 .toolbarDivider {
   width: 1px;
   height: 20px;
-  background: rgba(34, 197, 94, 0.2);
+  background: rgba(139, 92, 246, 0.25);
   margin: 0 0.25rem;
 }
 
@@ -682,6 +685,7 @@
   font-size: 0.875rem;
   line-height: 1.6;
   color: #0f172a;
+  background: rgba(255, 255, 255, 0.95);
   outline: none;
 }
 
@@ -700,7 +704,7 @@
 }
 
 .richTextEditor a {
-  color: #22c55e;
+  color: #8b5cf6;
   text-decoration: underline;
 }
 
@@ -714,7 +718,7 @@
 .clockIcon {
   width: 16px;
   height: 16px;
-  color: rgba(34, 197, 94, 0.8);
+  color: rgba(139, 92, 246, 0.8);
 }
 
 .removeBtn {
@@ -747,17 +751,17 @@
 .scheduleInputs input {
   flex: 1;
   border-radius: 10px;
-  border: 1.5px solid rgba(34, 197, 94, 0.15);
+  border: 1.5px solid rgba(139, 92, 246, 0.2);
   padding: 0.75rem 1rem;
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.95);
   transition: all 0.3s ease;
   font-size: 0.875rem;
 }
 
 .scheduleInputs input:focus {
-  border-color: rgba(34, 197, 94, 0.35);
+  border-color: rgba(139, 92, 246, 0.4);
   background: rgba(255, 255, 255, 1);
-  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.1);
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.15);
   outline: none;
 }
 
@@ -773,13 +777,13 @@
   gap: 0.4rem;
   padding: 0.75rem 1rem;
   border-radius: 10px;
-  background: linear-gradient(135deg, rgba(34, 197, 94, 0.12) 0%, rgba(34, 197, 94, 0.08) 100%);
-  color: #15803d;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(99, 102, 241, 0.12) 100%);
+  color: #6366f1;
   font-weight: 600;
   font-size: 0.8125rem;
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  border: 1px solid rgba(34, 197, 94, 0.2);
-  box-shadow: 0 2px 6px rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(139, 92, 246, 0.25);
+  box-shadow: 0 2px 6px rgba(139, 92, 246, 0.15);
   cursor: pointer;
 }
 
@@ -789,9 +793,9 @@
 }
 
 .scheduleBtn:hover {
-  background: linear-gradient(135deg, rgba(34, 197, 94, 0.2) 0%, rgba(34, 197, 94, 0.15) 100%);
-  color: #14532d;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.25) 0%, rgba(99, 102, 241, 0.2) 100%);
+  color: #4f46e5;
   transform: translateY(-1px);
-  box-shadow: 0 4px 10px rgba(34, 197, 94, 0.2);
+  box-shadow: 0 4px 10px rgba(139, 92, 246, 0.25);
 }
 
