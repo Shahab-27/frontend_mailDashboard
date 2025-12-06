@@ -296,8 +296,10 @@ const ComposeModal = () => {
           Subject
           <input name="subject" value={form.subject} onChange={handleChange} placeholder="Email subject" />
         </label>
-        <label className={styles.messageLabel}>
-          <span>Message</span>
+        <div className={styles.messageSection}>
+          <label className={styles.messageLabel}>
+            <span>Message</span>
+          </label>
           {isRichText ? (
             <div className={styles.richTextWrapper}>
               <div className={styles.toolbar}>
@@ -392,7 +394,7 @@ const ComposeModal = () => {
               </button>
             </div>
           )}
-        </label>
+        </div>
         {showSchedule && (
           <label>
             <div className={styles.scheduleHeader}>
