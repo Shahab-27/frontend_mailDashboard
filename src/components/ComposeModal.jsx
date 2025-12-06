@@ -297,9 +297,7 @@ const ComposeModal = () => {
           <input name="subject" value={form.subject} onChange={handleChange} placeholder="Email subject" />
         </label>
         <div className={styles.messageSection}>
-          <label className={styles.messageLabel}>
-            <span>Message</span>
-          </label>
+          <span className={styles.messageLabelText}>Message</span>
           {isRichText ? (
             <div className={styles.richTextWrapper}>
               <div className={styles.toolbar}>
