@@ -224,9 +224,11 @@ const ComposeModal = () => {
     setStatus({ loading: false, error: '' });
 
     try {
+      console.log('[AI Frontend] Calling generate-formal API with message:', form.body.substring(0, 50) + '...');
       const response = await api.post('/mail/generate-formal', {
         message: form.body,
       });
+      console.log('[AI Frontend] Received response:', response.data);
 
       if (response.data && response.data.message) {
         const generatedText = response.data.message;
@@ -245,7 +247,10 @@ const ComposeModal = () => {
         throw new Error('No response from AI');
       }
     } catch (error) {
-      setStatus({ loading: false, error: error.message });
+      // Extract error message from API response or use default
+      const errorMessage = error.response?.data?.message || error.message || 'Failed to generate formal message. Please try again.';
+      console.error('[AI] Error generating formal message:', error);
+      setStatus({ loading: false, error: errorMessage });
     } finally {
       setAiLoading(false);
     }
