@@ -225,7 +225,15 @@ const ComposeModal = () => {
       }
     } catch (error) {
       console.error('AI Generation Error:', error);
-      const errorMessage = error.response?.data?.message || error.message || 'Failed to generate formal message. Please try again.';
+      let errorMessage = error.response?.data?.message || error.message || 'Failed to generate formal message. Please try again.';
+      
+      // Format multi-line error messages for better display
+      if (errorMessage.includes('\n')) {
+        errorMessage = errorMessage.split('\n').map((line, index) => 
+          index === 0 ? line : `  ${line}`
+        ).join('\n');
+      }
+      
       setStatus({ loading: false, error: errorMessage });
     } finally {
       setAiLoading(false);
