@@ -103,6 +103,10 @@ const ComposeModal = () => {
     return now.toISOString().slice(0, 16);
   };
 
+  //----------------------------------------------------------------
+  //  Upload attachments
+  //----------------------------------------------------------------
+  
   const uploadFilesToCloudinary = async (files) => {
     if (files.length === 0) return [];
 
@@ -110,13 +114,12 @@ const ComposeModal = () => {
     setUploadProgress({});
 
     try {
-      // Convert files to base64
       const filePromises = files.map(async (file) => {
         return new Promise((resolve, reject) => {
           const reader = new FileReader();
           reader.onload = () => {
             resolve({
-              fileData: reader.result, // data URL format
+              fileData: reader.result,
               fileName: file.name,
               fileType: file.type,
             });
@@ -128,7 +131,6 @@ const ComposeModal = () => {
 
       const fileDataArray = await Promise.all(filePromises);
 
-      // Upload to backend
       const response = await api.post('/upload/multiple', {
         files: fileDataArray,
       });
@@ -146,10 +148,13 @@ const ComposeModal = () => {
     }
   };
 
+  //----------------------------------------------------------------
+  // Submit
+  //----------------------------------------------------------------
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Update HTML content if rich text is enabled
     if (isRichText && editorRef.current) {
       const htmlContent = editorRef.current.innerHTML;
       const textContent = editorRef.current.innerText;
@@ -162,7 +167,6 @@ const ComposeModal = () => {
 
     setStatus({ loading: true, error: '' });
     try {
-      // Upload attachments first
       let uploadedAttachments = [];
       if (attachments.length > 0) {
         uploadedAttachments = await uploadFilesToCloudinary(attachments);
@@ -170,7 +174,6 @@ const ComposeModal = () => {
 
       const mailData = { ...form, attachments: uploadedAttachments };
       
-      // Combine scheduled date and time if scheduling
       if (showSchedule && form.scheduledDate && form.scheduledTime) {
         mailData.scheduledAt = `${form.scheduledDate}T${form.scheduledTime}`;
       }
@@ -181,6 +184,10 @@ const ComposeModal = () => {
       setStatus({ loading: false, error: error.message || 'Failed to send email' });
     }
   };
+
+  //----------------------------------------------------------------
+  // Draft
+  //----------------------------------------------------------------
 
   const handleSaveDraft = async () => {
     setDraftState({ saving: true, message: '' });
@@ -195,13 +202,21 @@ const ComposeModal = () => {
     }
   };
 
+  //----------------------------------------------------------------
+  // Overlay click
+  //----------------------------------------------------------------
+
   const handleOverlayClick = (event) => {
     if (event.target === event.currentTarget) toggleCompose(false);
   };
 
+  //----------------------------------------------------------------
+  // AI
+  //----------------------------------------------------------------
+
   const handleAIGenerate = async () => {
     if (!form.body.trim()) {
-      setStatus({ loading: false, error: 'Please enter a message first' });
+      setStatus({ loading: false, error: 'Please write something first' });
       return;
     }
 
@@ -215,311 +230,217 @@ const ComposeModal = () => {
 
       if (response.data && response.data.message) {
         const generatedText = response.data.message;
+
         if (isRichText && editorRef.current) {
           editorRef.current.innerHTML = generatedText.replace(/\n/g, '<br>');
         }
-        setForm((prev) => ({ ...prev, body: generatedText, htmlBody: isRichText ? generatedText.replace(/\n/g, '<br>') : '' }));
-        setStatus({ loading: false, error: '' });
+
+        setForm((prev) => ({
+          ...prev,
+          body: generatedText,
+          htmlBody: isRichText ? generatedText.replace(/\n/g, '<br>') : '',
+        }));
+
       } else {
         throw new Error('No response from AI');
       }
     } catch (error) {
-      console.error('AI Generation Error:', error);
-      let errorMessage = error.response?.data?.message || error.message || 'Failed to generate formal message. Please try again.';
-      
-      // Format multi-line error messages for better display
-      if (errorMessage.includes('\n')) {
-        errorMessage = errorMessage.split('\n').map((line, index) => 
-          index === 0 ? line : `  ${line}`
-        ).join('\n');
-      }
-      
-      setStatus({ loading: false, error: errorMessage });
+      setStatus({ loading: false, error: error.message });
     } finally {
       setAiLoading(false);
     }
   };
 
+  //----------------------------------------------------------------
+  // UI
+  //----------------------------------------------------------------
+
   return (
     <div className={styles.overlay} onClick={handleOverlayClick} role="dialog" aria-modal="true">
       <form className={styles.modal} onSubmit={handleSubmit}>
         <div className={styles.modalContent}>
+          
           <header className={styles.header}>
             <h3>Compose Mail</h3>
-            <button type="button" className={styles.closeBtn} aria-label="Close compose window" onClick={() => toggleCompose(false)}>
+            <button type="button" className={styles.closeBtn} aria-label="Close" onClick={() => toggleCompose(false)}>
               <XMarkIcon />
             </button>
           </header>
-        <label>
-          To
-          <input name="to" type="email" value={form.to} required onChange={handleChange} placeholder="recipient@example.com" />
-        </label>
-        <div className={styles.optionalFields}>
-          <button 
-            type="button" 
-            className={`${styles.linkBtn} ${(showCC || form.cc) ? styles.active : ''}`} 
-            onClick={() => {
-              if (showCC) {
-                setShowCC(false);
-                if (!form.cc) {
-                  setForm(prev => ({ ...prev, cc: '' }));
-                }
-              } else {
-                setShowCC(true);
-              }
-            }}
-          >
-            Cc
-          </button>
-          <button 
-            type="button" 
-            className={`${styles.linkBtn} ${(showBCC || form.bcc) ? styles.active : ''}`} 
-            onClick={() => {
-              if (showBCC) {
-                setShowBCC(false);
-                if (!form.bcc) {
-                  setForm(prev => ({ ...prev, bcc: '' }));
-                }
-              } else {
-                setShowBCC(true);
-              }
-            }}
-          >
-            Bcc
-          </button>
-        </div>
-        {(showCC || form.cc) && (
+
+          {/* To */}
           <label>
-            Cc
-            <input name="cc" type="email" value={form.cc} onChange={handleChange} placeholder="cc@example.com" />
+            To
+            <input name="to" type="email" value={form.to} required onChange={handleChange} />
           </label>
-        )}
-        {(showBCC || form.bcc) && (
-          <label>
-            Bcc
-            <input name="bcc" type="email" value={form.bcc} onChange={handleChange} placeholder="bcc@example.com" />
-          </label>
-        )}
-        <label>
-          Subject
-          <input name="subject" value={form.subject} onChange={handleChange} placeholder="Email subject" />
-        </label>
-        <div className={styles.messageSection}>
-          <label className={styles.messageLabel}>
-            Message
-            {isRichText ? (
-            <div className={styles.richTextWrapper}>
-              <div className={styles.toolbar}>
-                <button type="button" onClick={() => formatText('bold')} title="Bold">
-                  <strong>B</strong>
-                </button>
-                <button type="button" onClick={() => formatText('italic')} title="Italic">
-                  <em>I</em>
-                </button>
-                <button type="button" onClick={() => formatText('underline')} title="Underline">
-                  <u>U</u>
-                </button>
-                <div className={styles.toolbarDivider}></div>
-                <button type="button" onClick={() => formatText('insertUnorderedList')} title="Bullet List">
-                  •
-                </button>
-                <button type="button" onClick={() => formatText('insertOrderedList')} title="Numbered List">
-                  1.
-                </button>
-                <div className={styles.toolbarDivider}></div>
-                <button type="button" onClick={() => {
-                  const url = prompt('Enter URL:');
-                  if (url) formatText('createLink', url);
-                }} title="Insert Link">
-                  🔗
-                </button>
-              </div>
-              <div
-                ref={editorRef}
-                className={styles.richTextEditor}
-                contentEditable
-                onInput={handleRichTextChange}
-                dangerouslySetInnerHTML={{ __html: form.htmlBody || form.body.replace(/\n/g, '<br>') }}
-              />
-              <button
-                type="button"
-                className={styles.aiButton}
-                onClick={handleAIGenerate}
-                disabled={aiLoading || !form.body.trim()}
-                title="Generate formal message with AI"
-                aria-label="Generate formal message with AI"
-              >
-                {aiLoading ? (
-                  <div className={styles.spinner}></div>
-                ) : (
-                  <svg
-                    className={styles.sparkleIcon}
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth="2.5"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.562.562 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z"
-                    />
-                  </svg>
-                )}
-              </button>
-            </div>
-          ) : (
-            <div className={styles.textareaWrapper}>
-              <textarea name="body" rows={6} value={form.body} onChange={handleChange} />
-              <button
-                type="button"
-                className={styles.aiButton}
-                onClick={handleAIGenerate}
-                disabled={aiLoading || !form.body.trim()}
-                title="Generate formal message with AI"
-                aria-label="Generate formal message with AI"
-              >
-                {aiLoading ? (
-                  <div className={styles.spinner}></div>
-                ) : (
-                  <svg
-                    className={styles.sparkleIcon}
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth="2.5"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.562.562 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z"
-                    />
-                  </svg>
-                )}
-              </button>
-            </div>
+
+          {/* CC/BCC toggles */}
+          <div className={styles.optionalFields}>
+            <button type="button" className={`${styles.linkBtn} ${(showCC || form.cc) ? styles.active : ''}`}
+              onClick={() => setShowCC(!showCC)}>Cc</button>
+
+            <button type="button" className={`${styles.linkBtn} ${(showBCC || form.bcc) ? styles.active : ''}`}
+              onClick={() => setShowBCC(!showBCC)}>Bcc</button>
+          </div>
+
+          {showCC && (
+            <label>
+              Cc
+              <input name="cc" type="email" value={form.cc}
+                onChange={handleChange}/>
+            </label>
           )}
-          </label>
-        </div>
-        {showSchedule && (
+
+          {showBCC && (
+            <label>
+              Bcc
+              <input name="bcc" type="email" value={form.bcc}
+                onChange={handleChange}/>
+            </label>
+          )}
+
+          {/* Subject */}
           <label>
-            <div className={styles.scheduleHeader}>
-              <ClockIcon className={styles.clockIcon} />
-              <span>Schedule Send</span>
-              <button type="button" className={styles.removeBtn} onClick={() => {
-                setShowSchedule(false);
-                setForm(prev => ({ ...prev, scheduledDate: '', scheduledTime: '' }));
-              }}>
-                ×
+            Subject
+            <input name="subject" value={form.subject} onChange={handleChange} />
+          </label>
+
+          {/* MESSAGE SECTION */}
+          <div className={styles.messageSection}>
+            <label className={styles.messageLabel}>
+              Message
+
+              <div className={styles.editorContainer}>
+                {isRichText ? (
+                  <div className={styles.richTextWrapper}>
+                    <div className={styles.toolbar}>
+                      <button type="button" onClick={() => formatText('bold')}><strong>B</strong></button>
+                      <button type="button" onClick={() => formatText('italic')}><em>I</em></button>
+                      <button type="button" onClick={() => formatText('underline')}><u>U</u></button>
+                      <div className={styles.toolbarDivider}></div>
+                      <button type="button" onClick={() => formatText('insertUnorderedList')}>•</button>
+                      <button type="button" onClick={() => formatText('insertOrderedList')}>1.</button>
+                      <div className={styles.toolbarDivider}></div>
+                    </div>
+
+                    <div
+                      ref={editorRef}
+                      className={styles.richTextEditor}
+                      contentEditable
+                      onInput={handleRichTextChange}
+                      dangerouslySetInnerHTML={{ __html: form.htmlBody || form.body.replace(/\n/g, '<br>') }}
+                    />
+                  </div>
+                ) : (
+                  <div className={styles.textareaWrapper}>
+                    <textarea name="body" rows={6} value={form.body} onChange={handleChange}/>
+                  </div>
+                )}
+
+                {/* AI button (INSIDE bottom-right) */}
+                <button
+                  type="button"
+                  className={styles.aiInside}
+                  onClick={handleAIGenerate}
+                  disabled={aiLoading || !form.body.trim()}
+                >
+                  {aiLoading ? (
+                    <div className={styles.spinner}></div>
+                  ) : (
+                    <svg className={styles.sparkleIcon} xmlns="http://www.w3.org/2000/svg"
+                      fill="none" viewBox="0 0 24 24" strokeWidth="2.5" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round"
+                        d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.563.563 0 00-.182-.557l-4.204-3.602a.562.562 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
+                    </svg>
+                  )}
+                </button>
+
+              </div>
+            </label>
+          </div>
+
+          {showSchedule && (
+            <label>
+              <div className={styles.scheduleHeader}>
+                <ClockIcon className={styles.clockIcon} />
+                Schedule Send
+                <button type="button" className={styles.removeBtn}
+                  onClick={() => setShowSchedule(false)}>×</button>
+              </div>
+              <div className={styles.scheduleInputs}>
+                <input type="date" name="scheduledDate"
+                  value={form.scheduledDate} onChange={handleChange}/>
+                <input type="time" name="scheduledTime"
+                  value={form.scheduledTime} onChange={handleChange}/>
+              </div>
+            </label>
+          )}
+
+          {status.error && <p className={styles.error}>{status.error}</p>}
+
+          <div className={styles.actions}>
+            <div className={styles.leftActions}>
+              <button type="button" className={styles.secondaryBtn}
+                onClick={handleSaveDraft} disabled={draftState.saving || status.loading}>
+                {draftState.saving ? 'Saving…' : draftId ? 'Update Draft' : 'Save Draft'}
               </button>
             </div>
-            <div className={styles.scheduleInputs}>
-              <input
-                type="date"
-                name="scheduledDate"
-                value={form.scheduledDate}
-                onChange={handleChange}
-                min={new Date().toISOString().split('T')[0]}
-                required={showSchedule}
-              />
-              <input
-                type="time"
-                name="scheduledTime"
-                value={form.scheduledTime}
-                onChange={handleChange}
-                required={showSchedule}
-              />
-            </div>
-          </label>
-        )}
-        {status.error && <p className={styles.error}>{status.error}</p>}
-        <div className={styles.actions}>
-          <div className={styles.leftActions}>
-            <button type="button" className={styles.secondaryBtn} onClick={handleSaveDraft} disabled={draftState.saving || status.loading}>
-              {draftState.saving ? 'Saving…' : draftId ? 'Update Draft' : 'Save Draft'}
+
+            <button type="submit" className={styles.sendBtn} disabled={status.loading}>
+              <PaperAirplaneIcon />
+              {status.loading ? 'Sending…' : showSchedule ? 'Schedule' : 'Send Mail'}
             </button>
           </div>
-          <button type="submit" className={styles.sendBtn} disabled={status.loading}>
-            <PaperAirplaneIcon />
-            {status.loading ? 'Sending…' : showSchedule ? 'Schedule' : 'Send Mail'}
-          </button>
+
+          {draftState.message && <p className={styles.meta}>{draftState.message}</p>}
         </div>
-        {draftState.message && <p className={styles.meta}>{draftState.message}</p>}
-        </div>
+
         <div className={styles.modalSidebar}>
+          
           <div className={styles.sidebarSection}>
             <h4 className={styles.sidebarTitle}>Quick Actions</h4>
             <div className={styles.quickActions}>
-              <button
-                type="button"
+              <button type="button"
                 className={`${styles.quickActionBtn} ${isRichText ? styles.active : ''}`}
-                onClick={() => setIsRichText(!isRichText)}
-                title="Toggle rich text editor"
-              >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M6 4h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"></path>
-                  <path d="M6 12h9"></path>
-                </svg>
-                <span>Rich Text</span>
+                onClick={() => setIsRichText(!isRichText)}>
+                Rich Text
               </button>
-              <button
-                type="button"
+
+              <button type="button"
                 className={`${styles.quickActionBtn} ${showSchedule ? styles.active : ''}`}
-                onClick={() => setShowSchedule(!showSchedule)}
-                title="Schedule email"
-              >
-                <ClockIcon />
-                <span>Schedule</span>
+                onClick={() => setShowSchedule(!showSchedule)}>
+                <ClockIcon /> Schedule
               </button>
             </div>
           </div>
-          
+
           <div className={styles.sidebarSection}>
             <h4 className={styles.sidebarTitle}>Attachments</h4>
-            <button
-              type="button"
-              className={styles.attachBtn}
-              onClick={() => fileInputRef.current?.click()}
-              title="Add attachment"
-            >
-              <PaperClipIcon />
-              <span>Add Attachment</span>
+            <button type="button" className={styles.attachBtn}
+              onClick={() => fileInputRef.current?.click()}>
+              <PaperClipIcon /> Add Attachment
             </button>
-            <input
-              ref={fileInputRef}
-              type="file"
-              multiple
-              style={{ display: 'none' }}
-              onChange={(e) => {
-                const files = Array.from(e.target.files || []);
-                setAttachments(prev => [...prev, ...files]);
-              }}
-            />
+
+            <input type="file" ref={fileInputRef} multiple style={{ display: 'none' }}
+              onChange={(e) => setAttachments(prev => [...prev, ...Array.from(e.target.files||[])])}/>
+
             {uploading && (
               <div className={styles.uploadStatus}>
                 <div className={styles.spinner}></div>
-                <span>Uploading files...</span>
+                Uploading…
               </div>
             )}
-            {attachments.length > 0 && (
+
+            {attachments.length>0 && (
               <div className={styles.attachmentsList}>
-                {attachments.map((file, index) => (
-                  <div key={index} className={styles.attachmentItem}>
-                    <PaperClipIcon className={styles.attachmentIcon} />
-                    <span className={styles.attachmentName} title={file.name}>
-                      {file.name}
-                    </span>
+                {attachments.map((file, i)=>(
+                  <div key={i} className={styles.attachmentItem}>
+                    <PaperClipIcon className={styles.attachmentIcon}/>
+                    <span className={styles.attachmentName}>{file.name}</span>
                     <span className={styles.attachmentSize}>
-                      {(file.size / 1024).toFixed(1)} KB
+                      {(file.size/1024).toFixed(1)} KB
                     </span>
-                    <button
-                      type="button"
-                      className={styles.removeAttachmentBtn}
-                      onClick={() => setAttachments(prev => prev.filter((_, i) => i !== index))}
-                      title="Remove attachment"
-                    >
+                    <button className={styles.removeAttachmentBtn}
+                      onClick={()=>setAttachments(prev=>prev.filter((_,idx)=>idx!==i))}>
                       ×
                     </button>
                   </div>
@@ -528,10 +449,10 @@ const ComposeModal = () => {
             )}
           </div>
         </div>
+
       </form>
     </div>
   );
 };
 
 export default ComposeModal;
-
