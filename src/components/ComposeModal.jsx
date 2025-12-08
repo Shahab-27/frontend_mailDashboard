@@ -440,17 +440,6 @@ const ComposeModal = () => {
             <button type="button" className={styles.secondaryBtn} onClick={handleSaveDraft} disabled={draftState.saving || status.loading}>
               {draftState.saving ? 'Saving…' : draftId ? 'Update Draft' : 'Save Draft'}
             </button>
-            {!showSchedule && (
-              <button
-                type="button"
-                className={styles.scheduleBtn}
-                onClick={() => setShowSchedule(true)}
-                title="Schedule email"
-              >
-                <ClockIcon />
-                Schedule
-              </button>
-            )}
           </div>
           <button type="submit" className={styles.sendBtn} disabled={status.loading}>
             <PaperAirplaneIcon />
