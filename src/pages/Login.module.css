@@ -1,5 +1,6 @@
 .screen {
   min-height: 100vh;
+  height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -36,6 +37,7 @@
 .frame {
   position: relative;
   width: min(1120px, 96vw);
+  max-height: 88vh;
   border-radius: 40px;
   border: 1px solid rgba(15, 23, 42, 0.08);
   box-shadow:
@@ -156,6 +158,8 @@
   flex-direction: column;
   gap: 1.2rem;
   justify-content: center;
+  max-height: 88vh;
+  overflow: hidden;
 }
 
 .brand {
