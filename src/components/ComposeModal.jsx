@@ -15,6 +15,9 @@ const initialState = {
   scheduledTime: '',
 };
 
+const getLocalDate = (date = new Date()) => date.toLocaleDateString('en-CA');
+const getLocalTime = (date = new Date()) => date.toTimeString().slice(0, 5);
+
 const ComposeModal = () => {
   const { isComposeOpen, toggleCompose, sendMail, saveDraft, composeDraft } = useMailStore();
   const [form, setForm] = useState(initialState);
@@ -80,15 +83,23 @@ const ComposeModal = () => {
   };
 
   const handleRichTextChange = () => {
-    if (editorRef.current) {
+    if (!editorRef.current) return;
+    const htmlContent = editorRef.current.innerHTML;
+    const textContent = editorRef.current.innerText;
+    setForm((prev) => ({
+      ...prev,
+      htmlBody: htmlContent,
+      body: textContent,
+    }));
+  };
+
+  const snapshotContent = () => {
+    if (isRichText && editorRef.current) {
       const htmlContent = editorRef.current.innerHTML;
       const textContent = editorRef.current.innerText;
-      setForm((prev) => ({
-        ...prev,
-        htmlBody: htmlContent,
-        body: textContent,
-      }));
+      return { body: textContent, htmlBody: htmlContent };
     }
+    return { body: form.body, htmlBody: form.htmlBody };
   };
 
   const formatText = (command, value = null) => {
@@ -97,10 +108,53 @@ const ComposeModal = () => {
     handleRichTextChange();
   };
 
-  const getMinDateTime = () => {
-    const now = new Date();
-    now.setMinutes(now.getMinutes() + 1);
-    return now.toISOString().slice(0, 16);
+  const minScheduleDate = getLocalDate();
+  const minScheduleTime = form.scheduledDate === minScheduleDate
+    ? getLocalTime(new Date(Date.now() + 60_000))
+    : '';
+
+  const validateSchedule = () => {
+    if (!showSchedule) return { valid: true, scheduledAt: undefined };
+    if (!form.scheduledDate || !form.scheduledTime) {
+      return { valid: false, message: 'Select both date and time for scheduling' };
+    }
+    const scheduledAt = new Date(`${form.scheduledDate}T${form.scheduledTime}`);
+    if (Number.isNaN(scheduledAt.getTime()) || scheduledAt <= new Date()) {
+      return { valid: false, message: 'Scheduled time must be in the future' };
+    }
+    return { valid: true, scheduledAt: scheduledAt.toISOString() };
+  };
+
+  const handleAttachmentChange = (e) => {
+    const files = Array.from(e.target.files || []);
+    if (!files.length) return;
+    setAttachments((prev) => [...prev, ...files]);
+    e.target.value = '';
+  };
+
+  const handleToggleRichText = () => {
+    if (isRichText && editorRef.current) {
+      setForm((prev) => ({
+        ...prev,
+        body: editorRef.current.innerText,
+        htmlBody: '',
+      }));
+    }
+    setIsRichText((prev) => !prev);
+  };
+
+  const handleToggleSchedule = () => {
+    if (!showSchedule) {
+      const defaultDate = new Date(Date.now() + 5 * 60 * 1000);
+      setForm((prev) => ({
+        ...prev,
+        scheduledDate: getLocalDate(defaultDate),
+        scheduledTime: getLocalTime(defaultDate),
+      }));
+    } else {
+      setForm((prev) => ({ ...prev, scheduledDate: '', scheduledTime: '' }));
+    }
+    setShowSchedule((prev) => !prev);
   };
 
   //----------------------------------------------------------------
@@ -154,15 +208,20 @@ const ComposeModal = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    if (isRichText && editorRef.current) {
-      const htmlContent = editorRef.current.innerHTML;
-      const textContent = editorRef.current.innerText;
-      setForm((prev) => ({
-        ...prev,
-        htmlBody: htmlContent,
-        body: textContent,
-      }));
+
+    const { body, htmlBody } = snapshotContent();
+    const nextForm = { ...form, body, htmlBody };
+    setForm(nextForm);
+
+    if (!nextForm.to.trim()) {
+      setStatus({ loading: false, error: 'Recipient email is required' });
+      return;
+    }
+
+    const scheduleValidation = validateSchedule();
+    if (!scheduleValidation.valid) {
+      setStatus({ loading: false, error: scheduleValidation.message });
+      return;
     }
 
     setStatus({ loading: true, error: '' });
@@ -172,16 +231,18 @@ const ComposeModal = () => {
         uploadedAttachments = await uploadFilesToCloudinary(attachments);
       }
 
-      const mailData = { ...form, attachments: uploadedAttachments };
+      const mailData = { ...nextForm, attachments: uploadedAttachments };
       
-      if (showSchedule && form.scheduledDate && form.scheduledTime) {
-        mailData.scheduledAt = `${form.scheduledDate}T${form.scheduledTime}`;
+      if (scheduleValidation.scheduledAt) {
+        mailData.scheduledAt = scheduleValidation.scheduledAt;
       }
       
       await sendMail({ ...mailData, draftId });
       toggleCompose(false);
     } catch (error) {
       setStatus({ loading: false, error: error.message || 'Failed to send email' });
+    } finally {
+      setStatus((prev) => ({ ...prev, loading: false }));
     }
   };
 
@@ -190,15 +251,24 @@ const ComposeModal = () => {
   //----------------------------------------------------------------
 
   const handleSaveDraft = async () => {
+    const { body, htmlBody } = snapshotContent();
+    const draftPayload = { ...form, body, htmlBody };
+    setForm(draftPayload);
+
     setDraftState({ saving: true, message: '' });
     setStatus((prev) => ({ ...prev, error: '' }));
     try {
-      const draft = await saveDraft({ id: draftId, ...form });
+      let uploadedAttachments = [];
+      if (attachments.length > 0) {
+        uploadedAttachments = await uploadFilesToCloudinary(attachments);
+      }
+
+      const draft = await saveDraft({ id: draftId, ...draftPayload, attachments: uploadedAttachments });
       setDraftId(draft._id);
       setDraftState({ saving: false, message: 'Draft saved' });
     } catch (error) {
       setDraftState({ saving: false, message: '' });
-      setStatus((prev) => ({ ...prev, error }));
+      setStatus((prev) => ({ ...prev, error: error?.message || error || 'Failed to save draft' }));
     }
   };
 
@@ -273,9 +343,9 @@ const ComposeModal = () => {
           </header>
 
           {/* To */}
-          <label>
-            To
-            <input name="to" type="email" value={form.to} required onChange={handleChange} />
+          <label className={styles.field}>
+            <span className={styles.fieldLabel}>To</span>
+            <input className={styles.input} name="to" type="email" value={form.to} required onChange={handleChange} placeholder="recipient@example.com" />
           </label>
 
           {/* CC/BCC toggles */}
@@ -288,25 +358,25 @@ const ComposeModal = () => {
           </div>
 
           {showCC && (
-            <label>
-              Cc
-              <input name="cc" type="email" value={form.cc}
-                onChange={handleChange}/>
+            <label className={styles.field}>
+              <span className={styles.fieldLabel}>Cc</span>
+              <input className={styles.input} name="cc" type="email" value={form.cc}
+                onChange={handleChange} placeholder="Optional" />
             </label>
           )}
 
           {showBCC && (
-            <label>
-              Bcc
-              <input name="bcc" type="email" value={form.bcc}
-                onChange={handleChange}/>
+            <label className={styles.field}>
+              <span className={styles.fieldLabel}>Bcc</span>
+              <input className={styles.input} name="bcc" type="email" value={form.bcc}
+                onChange={handleChange} placeholder="Optional" />
             </label>
           )}
 
           {/* Subject */}
-          <label>
-            Subject
-            <input name="subject" value={form.subject} onChange={handleChange} />
+          <label className={styles.field}>
+            <span className={styles.fieldLabel}>Subject</span>
+            <input className={styles.input} name="subject" value={form.subject} onChange={handleChange} placeholder="What is this about?" />
           </label>
 
           {/* MESSAGE SECTION */}
@@ -364,17 +434,19 @@ const ComposeModal = () => {
           </div>
 
           {showSchedule && (
-            <label>
+            <label className={styles.scheduleCard}>
               <div className={styles.scheduleHeader}>
                 <ClockIcon className={styles.clockIcon} />
                 Schedule Send
                 <button type="button" className={styles.removeBtn}
-                  onClick={() => setShowSchedule(false)}>×</button>
+                  onClick={handleToggleSchedule}>×</button>
               </div>
               <div className={styles.scheduleInputs}>
                 <input type="date" name="scheduledDate"
+                  min={minScheduleDate}
                   value={form.scheduledDate} onChange={handleChange}/>
                 <input type="time" name="scheduledTime"
+                  min={minScheduleTime || undefined}
                   value={form.scheduledTime} onChange={handleChange}/>
               </div>
             </label>
@@ -390,7 +462,7 @@ const ComposeModal = () => {
               </button>
             </div>
 
-            <button type="submit" className={styles.sendBtn} disabled={status.loading}>
+            <button type="submit" className={styles.sendBtn} disabled={status.loading || uploading}>
               <PaperAirplaneIcon />
               {status.loading ? 'Sending…' : showSchedule ? 'Schedule' : 'Send Mail'}
             </button>
@@ -406,13 +478,13 @@ const ComposeModal = () => {
             <div className={styles.quickActions}>
               <button type="button"
                 className={`${styles.quickActionBtn} ${isRichText ? styles.active : ''}`}
-                onClick={() => setIsRichText(!isRichText)}>
+                onClick={handleToggleRichText}>
                 Rich Text
               </button>
 
               <button type="button"
                 className={`${styles.quickActionBtn} ${showSchedule ? styles.active : ''}`}
-                onClick={() => setShowSchedule(!showSchedule)}>
+                onClick={handleToggleSchedule}>
                 <ClockIcon /> Schedule
               </button>
             </div>
@@ -426,7 +498,7 @@ const ComposeModal = () => {
             </button>
 
             <input type="file" ref={fileInputRef} multiple style={{ display: 'none' }}
-              onChange={(e) => setAttachments(prev => [...prev, ...Array.from(e.target.files||[])])}/>
+              onChange={handleAttachmentChange}/>
 
             {uploading && (
               <div className={styles.uploadStatus}>
