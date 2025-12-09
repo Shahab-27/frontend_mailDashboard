@@ -380,11 +380,10 @@ const ComposeModal = () => {
     <div className={styles.overlay} onClick={handleOverlayClick} role="dialog" aria-modal="true">
       <form className={styles.modal} onSubmit={handleSubmit}>
         <div className={styles.modalContent}>
-          
           <header className={styles.header}>
             <div>
               <p className={styles.subTitle}>New message</p>
-              <h3>Compose Mail</h3>
+              <h3>Compose</h3>
             </div>
             <div className={styles.headerActions}>
               <button type="button" className={styles.closeBtn} aria-label="Close" onClick={() => toggleCompose(false)}>
@@ -429,6 +428,24 @@ const ComposeModal = () => {
             <span className={styles.fieldLabel}>Subject</span>
             <input name="subject" value={form.subject} onChange={handleChange} placeholder="What is this email about?" />
           </label>
+
+          {/* Quick toggles */}
+          <div className={styles.quickRow}>
+            <div className={styles.quickGroup}>
+              <button type="button" className={`${styles.chipBtn} ${isRichText ? styles.chipActive : ''}`} onClick={toggleRichText}>
+                Rich text
+              </button>
+              <button type="button" className={`${styles.chipBtn} ${showSchedule ? styles.chipActive : ''}`} onClick={toggleSchedule}>
+                <ClockIcon /> Schedule
+              </button>
+            </div>
+            <div className={styles.attachWrap}>
+              <button type="button" className={styles.attachBtn} onClick={() => fileInputRef.current?.click()} aria-label="Add attachment">
+                <PaperClipIcon />
+              </button>
+              <input type="file" ref={fileInputRef} multiple style={{ display: 'none' }} onChange={handleFileInputChange} />
+            </div>
+          </div>
 
           {/* MESSAGE SECTION */}
           <div className={styles.messageSection}>
@@ -509,87 +526,22 @@ const ComposeModal = () => {
           {status.error && <p className={styles.error}>{status.error}</p>}
 
           <div className={styles.actions}>
-            <div className={styles.leftActions}>
-              <button type="button" className={styles.secondaryBtn}
-                onClick={handleSaveDraft} disabled={draftState.saving || status.loading}>
-                {draftState.saving ? 'Saving…' : draftId ? 'Update Draft' : 'Save Draft'}
-              </button>
-            </div>
-
+            <button
+              type="button"
+              className={styles.secondaryBtn}
+              onClick={handleSaveDraft}
+              disabled={draftState.saving || status.loading}
+            >
+              {draftState.saving ? 'Saving…' : draftId ? 'Update Draft' : 'Save Draft'}
+            </button>
             <button type="submit" className={styles.sendBtn} disabled={isSendDisabled}>
               <PaperAirplaneIcon />
-              {status.loading ? 'Sending…' : showSchedule ? 'Schedule' : 'Send Mail'}
+              {status.loading ? 'Sending…' : showSchedule ? 'Schedule' : 'Send'}
             </button>
           </div>
 
           {draftState.message && <p className={styles.meta}>{draftState.message}</p>}
         </div>
-
-        <div className={styles.modalSidebar}>
-          
-          <div className={styles.sidebarSection}>
-            <h4 className={styles.sidebarTitle}>Quick Actions</h4>
-            <div className={styles.quickActions}>
-              <button type="button"
-                className={`${styles.quickActionBtn} ${isRichText ? styles.active : ''}`}
-                onClick={toggleRichText}>
-                Rich Text
-              </button>
-
-              <button type="button"
-                className={`${styles.quickActionBtn} ${showSchedule ? styles.active : ''}`}
-                onClick={toggleSchedule}>
-                <ClockIcon /> Schedule
-              </button>
-            </div>
-          </div>
-
-          <div className={styles.sidebarSection}>
-            <h4 className={styles.sidebarTitle}>Attachments</h4>
-            <p className={styles.sidebarHint}>Send documents, images or PDFs.</p>
-            <div className={styles.attachActions}>
-              <button type="button" className={styles.attachBtn}
-                onClick={() => fileInputRef.current?.click()}>
-                <PaperClipIcon /> Add attachment
-              </button>
-              <input type="file" ref={fileInputRef} multiple style={{ display: 'none' }}
-                onChange={handleFileInputChange}/>
-            </div>
-
-            {uploading && (
-              <div className={styles.uploadStatus}>
-                <div className={styles.spinner}></div>
-                Uploading…
-              </div>
-            )}
-
-            {attachments.length>0 && (
-              <div className={styles.attachmentsList}>
-                {attachments.map((file, i)=>(
-                  <div key={i} className={styles.attachmentItem}>
-                    <PaperClipIcon className={styles.attachmentIcon}/>
-                    <span className={styles.attachmentName}>{file.name}</span>
-                    <span className={styles.attachmentSize}>
-                      {formatFileSize(file.size)}
-                    </span>
-                    <button className={styles.removeAttachmentBtn}
-                      onClick={()=>removeAttachment(i)}
-                      type="button">
-                      ×
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {attachments.length === 0 && !uploading && (
-              <div className={styles.emptyAttachments}>
-                <p>No files added yet</p>
-              </div>
-            )}
-          </div>
-        </div>
-
       </form>
     </div>
   );
