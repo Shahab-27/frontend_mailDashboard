@@ -387,14 +387,6 @@ const ComposeModal = () => {
               <h3>Compose Mail</h3>
             </div>
             <div className={styles.headerActions}>
-              <button
-                type="button"
-                className={styles.ghostBtn}
-                onClick={handleSaveDraft}
-                disabled={draftState.saving || status.loading}
-              >
-                {draftState.saving ? 'Saving…' : 'Save draft'}
-              </button>
               <button type="button" className={styles.closeBtn} aria-label="Close" onClick={() => toggleCompose(false)}>
                 <XMarkIcon />
               </button>
