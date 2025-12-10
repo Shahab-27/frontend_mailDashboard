@@ -76,6 +76,19 @@ const MailViewer = ({ mail, onDelete, onRestore, folder, onEditDraft }) => {
           </p>
         </div>
         <div className={styles.contentCard}>
+          {mail.isScheduled && mail.scheduledAt && (
+            <div className={styles.scheduledBadge}>
+              Scheduled for{' '}
+              {new Date(mail.scheduledAt).toLocaleString(undefined, {
+                weekday: 'short',
+                year: 'numeric',
+                month: 'short',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+              })}
+            </div>
+          )}
           {mail.htmlBody ? (
             <div 
               className={styles.htmlContent} 
